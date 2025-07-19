@@ -1,0 +1,72 @@
+{
+  "com.modulix.framework.mybatis.plus.api.annotation.CheckNotExist@condition": {
+    "prefix": "#{",
+    "suffix": "}",
+    "method": {
+      "result": false,
+      "resultName": "result",
+      "parameters": true,
+      "parametersPrefix": [
+      ]
+    },
+    "fields": {
+      "root": "org.springframework.context.ApplicationContext"
+    }
+  },
+  "com.modulix.framework.mybatis.plus.api.annotation.CheckNotExist@existNotify": {
+    "prefix": "#{",
+    "suffix": "}",
+    "method": {
+      "result": false,
+      "resultName": "result",
+      "parameters": true,
+      "parametersPrefix": [
+      ]
+    },
+    "fields": {
+      "root": "org.springframework.context.ApplicationContext"
+    }
+  },
+  "com.modulix.framework.mybatis.plus.api.annotation.CheckExist@condition": {
+    "prefix": "#{",
+    "suffix": "}",
+    "method": {
+      "result": false,
+      "resultName": "result",
+      "parameters": true,
+      "parametersPrefix": [
+      ]
+    },
+    "fields": {
+      "root": "org.springframework.context.ApplicationContext"
+    }
+  },
+  "com.modulix.framework.mybatis.plus.api.annotation.CheckExist@notExistNotify": {
+    "prefix": "#{",
+    "suffix": "}",
+    "method": {
+      "result": false,
+      "resultName": "result",
+      "parameters": true,
+      "parametersPrefix": [
+      ]
+    },
+    "fields": {
+      "root": "org.springframework.context.ApplicationContext"
+    }
+  },
+  "com.modulix.framework.mybatis.plus.api.annotation.DeleteOperation@condition": {
+    "prefix": "#{",
+    "suffix": "}",
+    "method": {
+      "result": false,
+      "resultName": "result",
+      "parameters": true,
+      "parametersPrefix": [
+      ]
+    },
+    "fields": {
+      "root": "org.springframework.context.ApplicationContext"
+    }
+  }
+}

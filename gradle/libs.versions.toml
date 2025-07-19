@@ -1,0 +1,60 @@
+[versions]
+# 插件版本
+lombok-plugin-version = "8.14"
+spring-boot-plugin-version = "3.5.3"
+spring-boot-dependencies-version = "1.1.7"
+
+# 依赖版本
+commons-lang3-version = "3.17.0"
+mybatis-plus-version = "3.5.11"
+mybatis-plus-join-version = "1.5.4"
+mapstruct-plus-version = "1.4.8"
+jjwt-version = "0.12.6"
+guava-version = "33.4.8-jre"
+
+[libraries]
+
+guava = { module = "com.google.guava:guava", version.ref = "guava-version" }
+# mybatis-plus
+mybatis-plus-bom = { module = "com.baomidou:mybatis-plus-bom", version.ref = "mybatis-plus-version" }
+mybatis-plus-starter = { module = "com.baomidou:mybatis-plus-spring-boot3-starter" }
+mybatis-plus-annotation = { module = "com.baomidou:mybatis-plus-annotation" }
+mybatis-plus-extension = { module = "com.baomidou:mybatis-plus-extension" }
+mybatis-plus-jsqlparser = { module = "com.baomidou:mybatis-plus-jsqlparser" }
+mybatis-plus-core = { module = "com.baomidou:mybatis-plus-core" }
+mybatis-plus-spring = { module = "com.baomidou:mybatis-plus-spring" }
+
+# mybatis-plus-join
+mybatis-plus-join-starter = { module = "com.github.yulichang:mybatis-plus-join-boot-starter", version.ref = "mybatis-plus-join-version" }
+mybatis-plus-join-core = { module = "com.github.yulichang:mybatis-plus-join-core", version.ref = "mybatis-plus-join-version" }
+mybatis-plus-join-extension = { module = "com.github.yulichang:mybatis-plus-join-extension", version.ref = "mybatis-plus-join-version" }
+
+# mapstruct-plus
+mapstruct-plus = { module = "io.github.linpeilie:mapstruct-plus", version.ref = "mapstruct-plus-version" }
+
+# jwt
+jjwt = { module = "io.jsonwebtoken:jjwt", version.ref = "jjwt-version"}
+
+# spring control version
+spring-tx = { module = "org.springframework:spring-tx" }
+spring-expression = { module = "org.springframework:spring-expression" }
+spring-web = { module = "org.springframework:spring-web" }
+spring-security-core = { module = "org.springframework.security:spring-security-core" }
+spring-boot-starter-aop = { module = "org.springframework.boot:spring-boot-starter-aop" }
+spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
+spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security" }
+
+jakarta-annotation-api = { module = "jakarta.annotation:jakarta.annotation-api" }
+jakarta-servlet-api = { module = "jakarta.servlet:jakarta.servlet-api" }
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind" }
+logback-classic = { module = "ch.qos.logback:logback-classic" }
+
+# other dependencies
+commons-lang3 = { module = "org.apache.commons:commons-lang3", version.ref = "commons-lang3-version" }
+
+[bundles]
+
+[plugins]
+lombok = { id = "io.freefair.lombok", version.ref = "lombok-plugin-version" }
+spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot-plugin-version" }
+spring-boot-dependencies = { id = "io.spring.dependency-management", version.ref = "spring-boot-dependencies-version" }

@@ -1,0 +1,35 @@
+package com.modulix.framework.security.service.impl;
+
+import com.modulix.framework.security.api.LoginInfo;
+import com.modulix.framework.security.config.TokenConfigProperties;
+import com.modulix.framework.security.service.AuthService;
+import com.modulix.framework.security.service.TokenService;
+import jakarta.annotation.Resource;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * @author lipanre
+ */
+@Slf4j
+public class AuthServiceImpl implements AuthService {
+
+    @Resource
+    private TokenService tokenService;
+
+    @Resource
+    private TokenConfigProperties tokenConfigProperties;
+
+
+
+    @Override
+    @SneakyThrows
+    public LoginInfo refresh(String refreshToken) {
+        LoginInfo loginInfo = new LoginInfo();
+        Long userId = tokenService.parseRefreshToken(refreshToken, Long.class);
+        loginInfo.setToken(tokenService.createAccessToken(userId));
+        loginInfo.setHeader(tokenConfigProperties.getHeader());
+        loginInfo.setExpire(tokenConfigProperties.getAccessExpiration().getSeconds());
+        return loginInfo;
+    }
+}
