@@ -15,4 +15,4 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
-          token: ${{secret.RELEASE_TOKEN}}
+          token: ${{secrets.RELEASE_TOKEN}}
