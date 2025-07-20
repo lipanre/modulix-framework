@@ -1,4 +1,3 @@
-import com.vanniktech.maven.publish.SonatypeHost
 
 plugins {
     id("base")
@@ -20,12 +19,9 @@ subprojects {
     apply(plugin = "com.vanniktech.maven.publish")
 
     mavenPublishing {
-        // Define coordinates for the published artifact
-        coordinates(
-            groupId = project.group.toString(),
-            artifactId = project.name,
-            version = project.version.toString()
-        )
+        coordinates(project.group.toString(), project.name, project.version.toString())
+        publishToMavenCentral(automaticRelease = true)
+        signAllPublications()
 
         // Configure POM metadata for the published artifact
         pom {
@@ -55,11 +51,5 @@ subprojects {
                 url.set("https://github.com/lipanre/modulix-framework")
             }
         }
-
-        // Configure publishing to Maven Central
-        publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
-
-        // Enable GPG signing for all publications
-        signAllPublications()
     }
 }

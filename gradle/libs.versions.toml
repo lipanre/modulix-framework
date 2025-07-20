@@ -3,7 +3,7 @@
 lombok-plugin-version = "8.14"
 spring-boot-plugin-version = "3.5.3"
 spring-boot-dependencies-version = "1.1.7"
-maven-publish-version = "0.28.0"
+maven-publish-version = "0.34.0"
 
 # 依赖版本
 commons-lang3-version = "3.17.0"
