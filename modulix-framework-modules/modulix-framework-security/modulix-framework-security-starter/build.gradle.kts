@@ -12,5 +12,6 @@ dependencies {
 
     implementation(libs.jjwt)
     implementation(libs.spring.boot.starter.security)
+    implementation(libs.spring.boot.starter.validation)
     implementation(libs.jakarta.servlet.api)
 }
