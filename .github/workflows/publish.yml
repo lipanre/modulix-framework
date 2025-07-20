@@ -41,4 +41,4 @@ jobs:
 
       - name: 🐸publish to maven central
         run: |
-          ./gradlew publishAndReleaseToMavenCentral --no-configuration-cache
+          ./gradlew publishToMavenCentral
