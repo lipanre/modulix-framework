@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.validation.annotation.Validated;
 
@@ -91,7 +92,8 @@ public class TokenConfigProperties {
      */
     @SneakyThrows
     public Key getRefreshTokenSecretKey() {
-        return RSAUtil.getPrivateKey(refreshSecretPrivate.getContentAsString(StandardCharsets.UTF_8));
+        String contentAsString = refreshSecretPrivate.getContentAsString(StandardCharsets.UTF_8);
+        return RSAUtil.getPrivateKey(StringUtils.deleteWhitespace(contentAsString));
     }
 
     /**
@@ -101,8 +103,9 @@ public class TokenConfigProperties {
      * @throws InvalidKeySpecException 当公钥格式不正确时抛出
      */
     @SneakyThrows
-    public PublicKey getRefreshTokenPublicKey() throws InvalidKeySpecException {
-        return RSAUtil.getPublicKey(refreshSecretPublic.getContentAsString(StandardCharsets.UTF_8));
+    public PublicKey getRefreshTokenPublicKey() {
+        String contentAsString = refreshSecretPublic.getContentAsString(StandardCharsets.UTF_8);
+        return RSAUtil.getPublicKey(StringUtils.deleteWhitespace(contentAsString));
     }
 
 
