@@ -10,11 +10,11 @@ plugins {
 
 
 dependencies {
-    implementation(platform(libs.mybatis.plus.bom))
+    api(platform(libs.mybatis.plus.bom))
 
-    implementation(project(":modulix-framework-common"))
-    implementation(project(":modulix-framework-mybatis-plus:modulix-framework-mybatis-plus-api"))
-    implementation(project(":modulix-framework-web:modulix-framework-web-api"))
+    api(project(":modulix-framework-common"))
+    api(project(":modulix-framework-mybatis-plus:modulix-framework-mybatis-plus-api"))
+    api(project(":modulix-framework-web:modulix-framework-web-api"))
     compileOnly(project(":modulix-framework-security:modulix-framework-security-api"))
 
     implementation(libs.jakarta.servlet.api)

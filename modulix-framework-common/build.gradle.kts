@@ -13,5 +13,5 @@ dependencies {
     api(libs.commons.lang3)
     api(libs.guava)
     api(libs.jackson.databind)
-    implementation(libs.spring.expression)
+    compileOnly(libs.spring.expression)
 }

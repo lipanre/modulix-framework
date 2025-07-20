@@ -6,9 +6,9 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":modulix-framework-common"))
-    implementation(project(":modulix-framework-web:modulix-framework-web-api"))
-    implementation(project(":modulix-framework-security:modulix-framework-security-api"))
+    api(project(":modulix-framework-common"))
+    api(project(":modulix-framework-web:modulix-framework-web-api"))
+    api(project(":modulix-framework-security:modulix-framework-security-api"))
 
     implementation(libs.jjwt)
     implementation(libs.spring.boot.starter.security)
