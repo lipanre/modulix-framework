@@ -3,6 +3,7 @@
 lombok-plugin-version = "8.14"
 spring-boot-plugin-version = "3.5.3"
 spring-boot-dependencies-version = "1.1.7"
+maven-publish-version = "0.28.0"
 
 # 依赖版本
 commons-lang3-version = "3.17.0"
@@ -58,3 +59,4 @@ commons-lang3 = { module = "org.apache.commons:commons-lang3", version.ref = "co
 lombok = { id = "io.freefair.lombok", version.ref = "lombok-plugin-version" }
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot-plugin-version" }
 spring-boot-dependencies = { id = "io.spring.dependency-management", version.ref = "spring-boot-dependencies-version" }
+maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "maven-publish-version" }

@@ -1,5 +1,8 @@
+import com.vanniktech.maven.publish.SonatypeHost
+
 plugins {
     id("base")
+    alias(libs.plugins.maven.publish)
 }
 
 allprojects {
@@ -7,8 +10,56 @@ allprojects {
     version = "0.0.1"
 
     repositories {
-        maven {setUrl("https://maven.aliyun.com/repository/public/")}
-        maven {setUrl("https://maven.aliyun.com/repository/spring/")}
+        maven { setUrl("https://maven.aliyun.com/repository/public/") }
+        maven { setUrl("https://maven.aliyun.com/repository/spring/") }
         mavenCentral()
+    }
+}
+
+subprojects {
+    apply(plugin = "com.vanniktech.maven.publish")
+
+    mavenPublishing {
+        // Define coordinates for the published artifact
+        coordinates(
+            groupId = project.group.toString(),
+            artifactId = project.name,
+            version = project.version.toString()
+        )
+
+        // Configure POM metadata for the published artifact
+        pom {
+            name.set("modulix framework")
+            description.set("simple common business framework library")
+            inceptionYear.set("2025")
+            url.set("https://github.com/lipanre/modulix-framework")
+
+            licenses {
+                license {
+                    name.set("MIT")
+                    url.set("https://opensource.org/licenses/MIT")
+                }
+            }
+
+            // Specify developers information
+            developers {
+                developer {
+                    id.set("lipanre")
+                    name.set("lipanre")
+                    email.set("lipanre@gmail.com")
+                }
+            }
+
+            // Specify SCM information
+            scm {
+                url.set("https://github.com/lipanre/modulix-framework")
+            }
+        }
+
+        // Configure publishing to Maven Central
+        publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+
+        // Enable GPG signing for all publications
+        signAllPublications()
     }
 }
