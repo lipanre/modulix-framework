@@ -42,6 +42,7 @@ spring-tx = { module = "org.springframework:spring-tx" }
 spring-expression = { module = "org.springframework:spring-expression" }
 spring-web = { module = "org.springframework:spring-web" }
 spring-security-core = { module = "org.springframework.security:spring-security-core" }
+spring-boot-configuration-processor = { module = "org.springframework.boot:spring-boot-configuration-processor" }
 spring-boot-starter-aop = { module = "org.springframework.boot:spring-boot-starter-aop" }
 spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
 spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security" }

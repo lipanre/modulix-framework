@@ -1,6 +1,7 @@
 package com.modulix.framework.security.config;
 
 import com.modulix.framework.common.core.constant.ConfigConstant;
+import jakarta.validation.Valid;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
@@ -17,6 +18,7 @@ public class SecurityConfigProperties {
     /**
      * token配置属性
      */
+    @Valid
     @NestedConfigurationProperty
     private TokenConfigProperties token;
 
