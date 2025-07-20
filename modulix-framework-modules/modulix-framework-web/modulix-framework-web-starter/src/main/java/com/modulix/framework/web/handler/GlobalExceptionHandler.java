@@ -44,7 +44,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Response<String> methodArgumentNotValidException(MethodArgumentNotValidException e) {
-        return Response.fail(e.getBindingResult().getAllErrors().getFirst().getDefaultMessage(), e);
+        return Response.fail(e.getBindingResult().getAllErrors().get(0).getDefaultMessage(), e);
     }
 
     /**
@@ -70,7 +70,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(HandlerMethodValidationException.class)
     public Response<String> handlerMethodValidationException(HandlerMethodValidationException e) {
-        return Response.fail(e.getValueResults().getFirst().getResolvableErrors().getFirst().getDefaultMessage(), e);
+        return Response.fail(e.getValueResults().get(0).getResolvableErrors().get(0).getDefaultMessage(), e);
     }
 
     /**
