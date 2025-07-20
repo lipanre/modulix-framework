@@ -8,7 +8,7 @@ plugins {
 
 
 dependencies {
-    implementation(project(":modulix-framework-common:modulix-framework-common-core"))
+    implementation(project(":modulix-framework-common"))
     implementation(platform(libs.mybatis.plus.bom))
 
     implementation(libs.jackson.databind)

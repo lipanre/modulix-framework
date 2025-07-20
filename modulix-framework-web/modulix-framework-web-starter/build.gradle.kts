@@ -6,8 +6,8 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":modulix-framework-modules:modulix-framework-web:modulix-framework-web-api"))
-    implementation(project(":modulix-framework-common:modulix-framework-common-core"))
+    implementation(project(":modulix-framework-web:modulix-framework-web-api"))
+    implementation(project(":modulix-framework-common"))
 
     implementation(libs.spring.boot.starter.web)
 }
