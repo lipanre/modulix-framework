@@ -1,9 +1,8 @@
 package com.modulix.framework.mybatis.plus.config;
 
-import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.handler.DataPermissionHandler;
 import com.baomidou.mybatisplus.extension.plugins.inner.DataPermissionInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
 import com.modulix.framework.mybatis.plus.aop.DataBaseOperationAspect;
 import com.modulix.framework.mybatis.plus.aop.PageRequestAspect;
 import com.modulix.framework.mybatis.plus.api.page.PaginationInterceptor;
@@ -20,6 +19,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.request.RequestContextHolder;
 
+import java.util.List;
+
 /**
  * {@code description}
  * mybatis-plus通用配置类
@@ -31,13 +32,16 @@ import org.springframework.web.context.request.RequestContextHolder;
 @MapperScan("**.mapper")
 public class MybatisPlusConfiguration {
 
+
     @Bean
-    public MybatisPlusInterceptor mybatisPlusInterceptor(DataPermissionHandler dataPermissionHandler) {
+    public MybatisPlusInterceptor mybatisPlusInterceptor(List<InnerInterceptor>  innerInterceptors) {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
-        interceptor.addInnerInterceptor(new DataPermissionInterceptor(dataPermissionHandler));
-        interceptor.addInnerInterceptor(new PaginationInterceptor(DbType.MYSQL)); // 如果配置多个插件, 切记分页最后添加
+        innerInterceptors.forEach(interceptor::addInnerInterceptor);
+        interceptor.addInnerInterceptor(new PaginationInterceptor());
         return interceptor;
     }
+
+
 
     @Configuration
     @ConditionalOnClass({Aspect.class, HttpServletRequest.class, HttpServletResponse.class, RequestContextHolder.class})
@@ -83,8 +87,8 @@ public class MybatisPlusConfiguration {
         }
 
         @Bean
-        public DataPermissionHandler dataPermissionHandler() {
-            return new DataPermissionHandlerImpl();
+        public DataPermissionInterceptor dataPermissionHandler() {
+            return new DataPermissionInterceptor(new DataPermissionHandlerImpl());
         }
 
     }
