@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.boot.dependencies)
 }
+
 dependencies {
-    api(libs.spring.boot.starter.validation)
+    api(project(":modulix-framework-common"))
+    api(libs.jakarta.validation.api)
 }

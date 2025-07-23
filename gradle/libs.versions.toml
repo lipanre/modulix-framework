@@ -52,6 +52,7 @@ spring-boot-starter-validation = { module = "org.springframework.boot:spring-boo
 
 jakarta-annotation-api = { module = "jakarta.annotation:jakarta.annotation-api" }
 jakarta-servlet-api = { module = "jakarta.servlet:jakarta.servlet-api" }
+jakarta-validation-api = { module = "jakarta.validation:jakarta.validation-api"}
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind" }
 logback-classic = { module = "ch.qos.logback:logback-classic" }
 

@@ -1,9 +1,9 @@
 package com.modulix.framework.validation.validator;
 
-import ch.qos.logback.core.util.StringUtil;
 import com.modulix.framework.validation.annotation.Phone;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.regex.Pattern;
 
@@ -24,7 +24,7 @@ public class PhoneValidator implements ConstraintValidator<Phone, String> {
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
-        if (StringUtil.isNullOrEmpty(s)) {
+        if (StringUtils.isEmpty(s)) {
             return true;
         }
         return pattern.matcher(s).matches();
