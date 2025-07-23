@@ -9,7 +9,7 @@ plugins {
 dependencies {
     api(project(":modulix-framework-common"))
 
-    implementation(libs.logback.classic)
-    implementation(libs.jakarta.servlet.api)
-    implementation(libs.spring.web)
+    api(libs.logback.classic)
+    api(libs.jakarta.servlet.api)
+    api(libs.spring.web)
 }

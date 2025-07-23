@@ -10,9 +10,9 @@ dependencies {
     api(project(":modulix-framework-web:modulix-framework-web-api"))
     api(project(":modulix-framework-security:modulix-framework-security-api"))
 
-    implementation(libs.jjwt)
-    implementation(libs.spring.boot.starter.security)
-    implementation(libs.spring.boot.starter.validation)
-    implementation(libs.jakarta.servlet.api)
+    api(libs.jjwt)
+    api(libs.spring.boot.starter.security)
+    api(libs.spring.boot.starter.validation)
+    api(libs.jakarta.servlet.api)
     annotationProcessor(libs.spring.boot.configuration.processor)
 }

@@ -8,5 +8,5 @@ plugins {
 
 dependencies {
     api(project(":modulix-framework-mybatis-plus:modulix-framework-mybatis-plus-api"))
-    implementation(libs.spring.security.core)
+    api(libs.spring.security.core)
 }

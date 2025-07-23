@@ -17,14 +17,14 @@ dependencies {
     api(project(":modulix-framework-web:modulix-framework-web-api"))
     compileOnly(project(":modulix-framework-security:modulix-framework-security-api"))
 
-    implementation(libs.jakarta.servlet.api)
-    implementation(libs.jackson.databind)
-    implementation(libs.spring.web)
-    implementation(libs.jakarta.annotation.api)
-    implementation(libs.mybatis.plus.starter)
-    implementation(libs.mybatis.plus.jsqlparser)
-    implementation(libs.mybatis.plus.extension)
-    implementation(libs.spring.boot.starter.aop)
+    api(libs.jakarta.servlet.api)
+    api(libs.jackson.databind)
+    api(libs.spring.web)
+    api(libs.jakarta.annotation.api)
+    api(libs.mybatis.plus.starter)
+    api(libs.mybatis.plus.jsqlparser)
+    api(libs.mybatis.plus.extension)
+    api(libs.spring.boot.starter.aop)
 
 }
 
