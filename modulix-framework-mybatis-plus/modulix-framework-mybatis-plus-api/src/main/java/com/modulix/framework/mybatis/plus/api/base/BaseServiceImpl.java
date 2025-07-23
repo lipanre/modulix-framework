@@ -15,7 +15,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 public class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseDomain> extends MPJBaseServiceImpl<M, T> implements BaseService<T> {
 
     @Resource
-    private Converter converter;
+    protected Converter converter;
 
     /**
      * 在事务提交之后执行指定的hook操作
