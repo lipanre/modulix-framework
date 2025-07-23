@@ -13,9 +13,11 @@ mybatis-plus-join-version = "1.5.4"
 mapstruct-plus-version = "1.4.8"
 jjwt-version = "0.12.6"
 guava-version = "33.4.8-jre"
+fastexcel-version = "1.2.0"
 
 [libraries]
 
+fastexcel = { module = "cn.idev.excel:fastexcel", version.ref = "fastexcel-version"}
 guava = { module = "com.google.guava:guava", version.ref = "guava-version" }
 # mybatis-plus
 mybatis-plus-bom = { module = "com.baomidou:mybatis-plus-bom", version.ref = "mybatis-plus-version" }

@@ -9,4 +9,5 @@ dependencies {
     api(project(":modulix-framework-mybatis-plus:modulix-framework-mybatis-plus-starter"))
     api(project(":modulix-framework-security:modulix-framework-security-starter"))
     api(project(":modulix-framework-web:modulix-framework-web-starter"))
+    api(project(":modulix-framework-validation"))
 }

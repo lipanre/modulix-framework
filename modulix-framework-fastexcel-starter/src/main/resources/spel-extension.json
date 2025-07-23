@@ -1,0 +1,28 @@
+{
+  "com.modulix.framework.fastexcel.annotation.ExportExcel@value": {
+    "prefix": "#{",
+    "suffix": "}",
+    "method": {
+      "result": true,
+      "resultName": "result",
+      "parameters": false,
+      "parametersPrefix": [
+      ]
+    },
+    "fields": {
+    }
+  },
+  "com.modulix.framework.fastexcel.annotation.ExportExcel@fileName": {
+    "prefix": "#{",
+    "suffix": "}",
+    "method": {
+      "result": true,
+      "resultName": "result",
+      "parameters": false,
+      "parametersPrefix": [
+      ]
+    },
+    "fields": {
+    }
+  }
+}
