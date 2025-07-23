@@ -6,7 +6,7 @@ plugins {
 
 allprojects {
     group = "io.github.lipanre"
-    version = "0.0.9"
+    version = "0.0.10"
 
     repositories {
         maven { setUrl("https://maven.aliyun.com/repository/public/") }
