@@ -43,14 +43,14 @@ public class Response<T> {
      * 成功响应
      */
     public static <T> Response<T> success(T data) {
-        return success(200, data, "success");
+        return success(ResponseCode.SUCCESS, data, "success");
     }
 
     /**
      * 成功响应
      */
     public static <T> Response<T> success(T data, String message) {
-        return success(200, data, message);
+        return success(ResponseCode.SUCCESS, data, message);
     }
 
     /**

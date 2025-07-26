@@ -1,5 +1,6 @@
 package com.modulix.framework.security.handler;
 
+import com.modulix.framework.web.aip.constant.ResponseCode;
 import com.modulix.framework.web.aip.http.Response;
 import com.modulix.framework.web.aip.util.WebUtil;
 import jakarta.servlet.ServletException;
@@ -19,6 +20,6 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        WebUtil.response(response, Response.fail("请先认证", authException));
+        WebUtil.response(response, Response.fail(ResponseCode.REFRESH_TOKEN, authException.getMessage(), authException));
     }
 }

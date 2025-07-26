@@ -37,7 +37,7 @@ public class AdminAccountAuthenticationProvider implements AuthenticationProvide
             throw new BadCredentialsException("用户名或密码错误");
         }
         dbAuthentication.setAuthenticated(true);
-        return authentication;
+        return dbAuthentication;
     }
 
     @Override

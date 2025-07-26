@@ -13,6 +13,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.lang.NonNull;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -42,17 +44,24 @@ public class TokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
 
-        String clientId = request.getHeader(AuthConstant.CLIENT_ID);
         String token = request.getHeader(tokenConfigProperties.getHeader());
-        if (StringUtils.isEmpty(clientId) || StringUtils.isEmpty(token)) {
-            throw new AuthorizationDeniedException("请先认证");
+        if (StringUtils.isEmpty(token)) {
+            throw new AuthorizationDeniedException("请先登录");
         }
 
         Long userId = null;
         if (token.startsWith(tokenConfigProperties.getMonitorPrefix())) {
             userId = Long.parseLong(token.substring(tokenConfigProperties.getMonitorPrefix().length()));
         } else {
-            userId = tokenService.parseAccessToken(token, Long.class);
+            String clientId = request.getHeader(AuthConstant.CLIENT_ID);
+            if (StringUtils.isEmpty(clientId)) {
+                throw new BadCredentialsException("clientId为空");
+            }
+            try {
+                userId = tokenService.parseAccessToken(token, Long.class);
+            } catch (Exception e) {
+                throw new CredentialsExpiredException("token过期请刷新token");
+            }
         }
         AuthenticationService<?> authenticationService = getAuthenticationService(request);
         if (Objects.isNull(authenticationService)) {

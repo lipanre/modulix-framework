@@ -11,4 +11,5 @@ dependencies {
     api(project(":modulix-framework-web:modulix-framework-web-starter"))
     api(project(":modulix-framework-validation"))
     api(libs.mapstruct.plus.spring.boot.starter)
+    api(libs.mybatis.plus.join.starter)
 }

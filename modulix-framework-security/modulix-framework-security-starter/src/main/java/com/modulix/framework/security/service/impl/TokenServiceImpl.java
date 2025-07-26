@@ -52,7 +52,7 @@ public class TokenServiceImpl implements TokenService {
     @Override
     @SneakyThrows
     public <T> String createRefreshToken(T userId, String clientId) {
-        String refreshToken = NanoIdUtils.randomNanoId();
+        String refreshToken = NanoIdUtils.randomNanoId(NanoIdUtils.DEFAULT_NUMBER_GENERATOR, NanoIdUtils.DEFAULT_ALPHABET, 200);
         loginService.recordLoginInfo(JsonUtil.toJson(userId), refreshToken, tokenConfigProperties.getRefreshExpiration(), clientId);
         return refreshToken;
     }

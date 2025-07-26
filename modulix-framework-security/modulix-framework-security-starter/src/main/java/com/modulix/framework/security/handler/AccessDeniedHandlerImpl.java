@@ -21,6 +21,6 @@ public class AccessDeniedHandlerImpl implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         // 403禁止访问
-        WebUtil.response(HttpStatus.FORBIDDEN, response, Response.fail("禁止访问", accessDeniedException));
+        WebUtil.response(HttpStatus.FORBIDDEN, response, Response.fail(accessDeniedException.getMessage(), accessDeniedException));
     }
 }

@@ -8,10 +8,7 @@ import com.modulix.framework.security.service.AuthService;
 import com.modulix.framework.web.aip.http.Response;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 认证相关接口
@@ -33,7 +30,7 @@ public class AuthController {
      */
     @IgnoreAuth
     @PostMapping("/refresh")
-    public LoginInfo refresh(LoginInfo loginInfo) {
+    public LoginInfo refresh(@RequestBody LoginInfo loginInfo) {
         return authService.refresh(loginInfo.getRefreshToken());
     }
 
