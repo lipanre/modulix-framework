@@ -3,8 +3,6 @@ package com.modulix.framework.security.service;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 
-import java.security.spec.InvalidKeySpecException;
-
 /**
  * token service
  *
@@ -42,13 +40,11 @@ public interface TokenService {
     <T> String createRefreshToken(T userId);
 
     /**
-     * 获取refresh token解析器
+     * 用户用户id
      *
-     * @param token refresh token
-     * @param clazz refresh token携带内容的类型
-     * @return refresh token解析器
-     * @param <T> refresh token携带内容的类型
-     * @throws InvalidKeySpecException refresh token解析失败
+     * @param refreshToken 刷新token
+     * @param clazz 用户id类型
+     * @return 用户id
      */
-    <T> T parseRefreshToken(String token, Class<T> clazz) throws InvalidKeySpecException;
+    <T> T getUserId(String refreshToken, Class<T> clazz);
 }

@@ -1,6 +1,8 @@
 package com.modulix.framework.security.service.impl;
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import com.modulix.framework.common.core.util.JsonUtil;
+import com.modulix.framework.security.api.LoginService;
 import com.modulix.framework.security.config.TokenConfigProperties;
 import com.modulix.framework.security.service.TokenService;
 import io.jsonwebtoken.Claims;
@@ -9,7 +11,6 @@ import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
 
 import java.security.Key;
-import java.security.spec.InvalidKeySpecException;
 import java.time.Duration;
 import java.util.Date;
 
@@ -22,6 +23,9 @@ public class TokenServiceImpl implements TokenService {
 
     @Resource
     private TokenConfigProperties tokenConfigProperties;
+
+    @Resource
+    private LoginService loginService;
 
 
     @Override
@@ -46,13 +50,15 @@ public class TokenServiceImpl implements TokenService {
     @Override
     @SneakyThrows
     public <T> String createRefreshToken(T userId) {
-        String refreshSubject = JsonUtil.toJson(userId);
-        return createToken(refreshSubject, tokenConfigProperties.getRefreshTokenSecretKey(), tokenConfigProperties.getRefreshExpiration());
+        String refreshToken = NanoIdUtils.randomNanoId();
+        loginService.recordLoginInfo(JsonUtil.toJson(userId), refreshToken);
+        return refreshToken;
     }
 
     @Override
-    public <T> T parseRefreshToken(String token, Class<T> clazz) throws InvalidKeySpecException {
-        return JsonUtil.fromJson(((Claims) Jwts.parser().verifyWith(tokenConfigProperties.getRefreshTokenPublicKey()).build().parse(token).getPayload()).getSubject(), clazz);
+    public <T> T getUserId(String refreshToken, Class<T> clazz) {
+        String userId = loginService.getUserId(refreshToken);
+        return JsonUtil.fromJson(userId, clazz);
     }
 
 

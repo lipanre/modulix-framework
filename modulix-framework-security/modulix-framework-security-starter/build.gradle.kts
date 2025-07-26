@@ -11,6 +11,7 @@ dependencies {
     api(project(":modulix-framework-security:modulix-framework-security-api"))
 
     api(libs.jjwt)
+    api(libs.nanoid)
     api(libs.spring.boot.starter.security)
     api(libs.spring.boot.starter.validation)
     api(libs.jakarta.servlet.api)

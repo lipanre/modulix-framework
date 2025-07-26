@@ -1,20 +1,12 @@
 package com.modulix.framework.security.config;
 
-import com.modulix.framework.security.util.RSAUtil;
 import io.jsonwebtoken.security.Keys;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.SneakyThrows;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.core.io.Resource;
 import org.springframework.validation.annotation.Validated;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
-import java.security.Key;
-import java.security.PublicKey;
-import java.security.spec.InvalidKeySpecException;
 import java.time.Duration;
 
 /**
@@ -39,7 +31,7 @@ public class TokenConfigProperties {
     /**
      * 模拟token前缀
      */
-    private String monitorPrefix = "m9L{!{hd@9YHpK=";
+    private String monitorPrefix;
 
     /**
      * access token secret
@@ -57,18 +49,6 @@ public class TokenConfigProperties {
     private Duration accessExpiration = Duration.ofMinutes(10);
 
     /**
-     * refresh token rsa 私钥
-     */
-    @NotNull(message = "请配置refreshToken rsa私钥文件地址")
-    private Resource refreshSecretPrivate;
-
-    /**
-     * refresh token rsa 公钥
-     */
-    @NotNull(message = "请配置refreshToken rsa公钥文件地址")
-    private Resource refreshSecretPublic;
-
-    /**
      * refreshToken过期时间
      * <br>
      * 默认30天
@@ -82,30 +62,6 @@ public class TokenConfigProperties {
      */
     public SecretKey getAccessTokenSecretKey() {
         return Keys.hmacShaKeyFor(accessSecret.getBytes(StandardCharsets.UTF_8));
-    }
-
-    /**
-     * 获取refresh token rsa 私钥
-     *
-     * @return refresh token rsa 私钥
-     * @throws InvalidKeySpecException 当私钥格式不正确时抛出
-     */
-    @SneakyThrows
-    public Key getRefreshTokenSecretKey() {
-        String contentAsString = refreshSecretPrivate.getContentAsString(StandardCharsets.UTF_8);
-        return RSAUtil.getPrivateKey(StringUtils.deleteWhitespace(contentAsString));
-    }
-
-    /**
-     * 获取refresh token rsa 公钥
-     *
-     * @return refresh token rsa 公钥
-     * @throws InvalidKeySpecException 当公钥格式不正确时抛出
-     */
-    @SneakyThrows
-    public PublicKey getRefreshTokenPublicKey() {
-        String contentAsString = refreshSecretPublic.getContentAsString(StandardCharsets.UTF_8);
-        return RSAUtil.getPublicKey(StringUtils.deleteWhitespace(contentAsString));
     }
 
 

@@ -26,7 +26,7 @@ public class AuthServiceImpl implements AuthService {
     @SneakyThrows
     public LoginInfo refresh(String refreshToken) {
         LoginInfo loginInfo = new LoginInfo();
-        Long userId = tokenService.parseRefreshToken(refreshToken, Long.class);
+        Long userId = tokenService.getUserId(refreshToken, Long.class);
         loginInfo.setToken(tokenService.createAccessToken(userId));
         loginInfo.setHeader(tokenConfigProperties.getHeader());
         loginInfo.setExpire(tokenConfigProperties.getAccessExpiration().getSeconds());
