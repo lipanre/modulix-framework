@@ -1,6 +1,11 @@
 package com.modulix.framework.security.service.impl;
 
 import com.modulix.framework.security.api.LoginInfo;
+import com.modulix.framework.security.api.auth.Authentication;
+import com.modulix.framework.security.api.auth.AuthenticationContext;
+import com.modulix.framework.security.api.auth.AuthenticationService;
+import com.modulix.framework.security.api.auth.UserInfo;
+import com.modulix.framework.security.auth.AuthenticationServiceFactory;
 import com.modulix.framework.security.config.TokenConfigProperties;
 import com.modulix.framework.security.service.AuthService;
 import com.modulix.framework.security.service.TokenService;
@@ -20,6 +25,8 @@ public class AuthServiceImpl implements AuthService {
     @Resource
     private TokenConfigProperties tokenConfigProperties;
 
+    @Resource
+    private AuthenticationServiceFactory authenticationServiceFactory;
 
 
     @Override
@@ -36,5 +43,11 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public Boolean logout(Long userId, String clientId) {
         return tokenService.removeToken(userId, clientId);
+    }
+
+    @Override
+    public UserInfo getUserInfo(Long userId) {
+        AuthenticationService<Authentication> authenticationService = AuthenticationContext.getAuthenticationService();
+        return authenticationService.getUserInfo(userId);
     }
 }

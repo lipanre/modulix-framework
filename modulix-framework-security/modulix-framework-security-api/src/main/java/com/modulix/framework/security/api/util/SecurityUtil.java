@@ -35,10 +35,7 @@ public class SecurityUtil {
 
     public static Boolean isLogin() {
         Authentication authentication = (Authentication) SecurityContextHolder.getContext().getAuthentication();
-        if (Objects.isNull(authentication)) {
-            return false;
-        }
-        return true;
+        return Objects.nonNull(authentication);
     }
 
 

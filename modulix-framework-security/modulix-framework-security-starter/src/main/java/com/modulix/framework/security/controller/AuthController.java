@@ -2,6 +2,7 @@ package com.modulix.framework.security.controller;
 
 import com.modulix.framework.security.api.LoginInfo;
 import com.modulix.framework.security.api.annotation.IgnoreAuth;
+import com.modulix.framework.security.api.auth.UserInfo;
 import com.modulix.framework.security.api.util.SecurityUtil;
 import com.modulix.framework.security.common.AuthConstant;
 import com.modulix.framework.security.service.AuthService;
@@ -30,8 +31,18 @@ public class AuthController {
      */
     @IgnoreAuth
     @PostMapping("/refresh")
-    public LoginInfo refresh(@RequestBody LoginInfo loginInfo) {
-        return authService.refresh(loginInfo.getRefreshToken());
+    public Response<LoginInfo> refresh(@RequestBody LoginInfo loginInfo) {
+        return Response.success(authService.refresh(loginInfo.getRefreshToken()));
+    }
+
+    /**
+     * 获取用户信息
+     *
+     * @return 用户信息
+     */
+    @GetMapping("/user-info")
+    public Response<UserInfo> userInfo() {
+        return Response.success(authService.getUserInfo(SecurityUtil.getUserId()));
     }
 
     /**

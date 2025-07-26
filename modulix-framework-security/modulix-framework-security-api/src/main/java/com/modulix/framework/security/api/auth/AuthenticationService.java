@@ -25,4 +25,12 @@ public interface AuthenticationService<T extends Authentication> {
      * @return 认证信息
      */
     T loadAuthenticationById(Long userId);
+
+    /**
+     * 获取用户信息
+     *
+     * @param userId 用户id
+     * @return 用户信息
+     */
+    UserInfo getUserInfo(Long userId);
 }

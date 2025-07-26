@@ -1,6 +1,7 @@
 package com.modulix.framework.security.service;
 
 import com.modulix.framework.security.api.LoginInfo;
+import com.modulix.framework.security.api.auth.UserInfo;
 
 /**
  * @author lipanre
@@ -22,4 +23,12 @@ public interface AuthService {
      * @return 退出结果
      */
     Boolean logout(Long userId, String clientId);
+
+    /**
+     * 获取用户信息
+     *
+     * @param userId 用户id
+     * @return 用户信息
+     */
+    UserInfo getUserInfo(Long userId);
 }
