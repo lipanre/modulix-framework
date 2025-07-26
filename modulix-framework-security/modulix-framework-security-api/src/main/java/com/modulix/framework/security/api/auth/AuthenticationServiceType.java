@@ -10,6 +10,6 @@ public interface AuthenticationServiceType {
     /**
      * admin account
      */
-    String ADMIN_ACCOUNT = "adminAccountAuthenticationService";
+    String ADMIN_ACCOUNT = "admin-account";
 
 }
