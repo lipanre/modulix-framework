@@ -37,6 +37,8 @@ mybatis-plus-join-extension = { module = "com.github.yulichang:mybatis-plus-join
 
 # mapstruct-plus
 mapstruct-plus = { module = "io.github.linpeilie:mapstruct-plus", version.ref = "mapstruct-plus-version" }
+mapstruct-plus-spring-boot-starter = { module = "io.github.linpeilie:mapstruct-plus-spring-boot-starter", version.ref = "mapstruct-plus-version" }
+
 
 # jwt
 jjwt = { module = "io.jsonwebtoken:jjwt", version.ref = "jjwt-version"}

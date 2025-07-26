@@ -3,6 +3,7 @@ package com.modulix.framework.security.filter;
 import com.modulix.framework.security.api.auth.Authentication;
 import com.modulix.framework.security.api.auth.AuthenticationService;
 import com.modulix.framework.security.auth.AuthenticationServiceFactory;
+import com.modulix.framework.security.common.AuthConstant;
 import com.modulix.framework.security.config.TokenConfigProperties;
 import com.modulix.framework.security.service.TokenService;
 import jakarta.servlet.FilterChain;
@@ -40,10 +41,13 @@ public class TokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
+
+        String clientId = request.getHeader(AuthConstant.CLIENT_ID);
         String token = request.getHeader(tokenConfigProperties.getHeader());
-        if (StringUtils.isEmpty(token)) {
+        if (StringUtils.isEmpty(clientId) || StringUtils.isEmpty(token)) {
             throw new AuthorizationDeniedException("请先认证");
         }
+
         Long userId = null;
         if (token.startsWith(tokenConfigProperties.getMonitorPrefix())) {
             userId = Long.parseLong(token.substring(tokenConfigProperties.getMonitorPrefix().length()));

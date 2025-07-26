@@ -32,4 +32,9 @@ public class AuthServiceImpl implements AuthService {
         loginInfo.setExpire(tokenConfigProperties.getAccessExpiration().getSeconds());
         return loginInfo;
     }
+
+    @Override
+    public Boolean logout(Long userId, String clientId) {
+        return tokenService.removeToken(userId, clientId);
+    }
 }

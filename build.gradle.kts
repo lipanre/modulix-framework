@@ -9,8 +9,6 @@ allprojects {
     version = "0.0.11"
 
     repositories {
-        maven { setUrl("https://maven.aliyun.com/repository/public/") }
-        maven { setUrl("https://maven.aliyun.com/repository/spring/") }
         mavenCentral()
     }
 }

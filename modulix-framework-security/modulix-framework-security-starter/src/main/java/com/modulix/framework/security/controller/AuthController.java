@@ -2,10 +2,14 @@ package com.modulix.framework.security.controller;
 
 import com.modulix.framework.security.api.LoginInfo;
 import com.modulix.framework.security.api.annotation.IgnoreAuth;
+import com.modulix.framework.security.api.util.SecurityUtil;
+import com.modulix.framework.security.common.AuthConstant;
 import com.modulix.framework.security.service.AuthService;
+import com.modulix.framework.web.aip.http.Response;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,5 +35,15 @@ public class AuthController {
     @PostMapping("/refresh")
     public LoginInfo refresh(LoginInfo loginInfo) {
         return authService.refresh(loginInfo.getRefreshToken());
+    }
+
+    /**
+     * 退出登录
+     *
+     * @return 退出结果
+     */
+    @PostMapping("/logout")
+    public Response<Boolean> logout(@RequestHeader(AuthConstant.CLIENT_ID) String clientId) {
+        return Response.success(authService.logout(SecurityUtil.getUserId(), clientId));
     }
 }

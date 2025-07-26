@@ -10,9 +10,11 @@ import io.jsonwebtoken.Jwts;
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
 
+import javax.security.auth.login.CredentialExpiredException;
 import java.security.Key;
 import java.time.Duration;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * token serviceImpl
@@ -49,16 +51,24 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     @SneakyThrows
-    public <T> String createRefreshToken(T userId) {
+    public <T> String createRefreshToken(T userId, String clientId) {
         String refreshToken = NanoIdUtils.randomNanoId();
-        loginService.recordLoginInfo(JsonUtil.toJson(userId), refreshToken);
+        loginService.recordLoginInfo(JsonUtil.toJson(userId), refreshToken, tokenConfigProperties.getRefreshExpiration(), clientId);
         return refreshToken;
     }
 
     @Override
-    public <T> T getUserId(String refreshToken, Class<T> clazz) {
+    public <T> T getUserId(String refreshToken, Class<T> clazz) throws CredentialExpiredException {
         String userId = loginService.getUserId(refreshToken);
+        if (Objects.isNull(userId)) {
+            throw new CredentialExpiredException("refreshToken过期");
+        }
         return JsonUtil.fromJson(userId, clazz);
+    }
+
+    @Override
+    public Boolean removeToken(Long userId, String clientId) {
+        return loginService.removeLoginInfo(userId, clientId);
     }
 
 

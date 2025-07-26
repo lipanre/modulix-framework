@@ -30,4 +30,9 @@ public class LoginInfo {
      */
     private String header;
 
+    /**
+     * 客户端id
+     */
+    private String clientId;
+
 }

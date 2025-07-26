@@ -14,4 +14,12 @@ public interface AuthService {
      * @return 刷新后的token信息
      */
     LoginInfo refresh(String refreshToken);
+
+    /**
+     * 退出登录
+     *
+     * @param userId 用户id
+     * @return 退出结果
+     */
+    Boolean logout(Long userId, String clientId);
 }

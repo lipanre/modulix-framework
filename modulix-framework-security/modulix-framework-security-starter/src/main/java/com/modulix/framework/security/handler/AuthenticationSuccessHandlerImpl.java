@@ -1,5 +1,6 @@
 package com.modulix.framework.security.handler;
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import com.modulix.framework.security.api.LoginInfo;
 import com.modulix.framework.security.config.TokenConfigProperties;
 import com.modulix.framework.security.service.TokenService;
@@ -32,10 +33,12 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         if (authentication instanceof com.modulix.framework.security.api.auth.Authentication auth) {
             LoginInfo loginInfo = new LoginInfo();
+            String clientId = NanoIdUtils.randomNanoId();
             loginInfo.setToken(tokenService.createAccessToken(auth.getId()));
-            loginInfo.setRefreshToken(tokenService.createRefreshToken(auth.getId()));
+            loginInfo.setRefreshToken(tokenService.createRefreshToken(auth.getId(), clientId));
             loginInfo.setExpire(tokenConfigProperties.getAccessExpiration().getSeconds());
             loginInfo.setHeader(tokenConfigProperties.getHeader());
+            loginInfo.setClientId(clientId);
             WebUtil.response(response, Response.success(loginInfo));
             return;
         }

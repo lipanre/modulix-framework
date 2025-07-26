@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import javax.security.auth.login.CredentialExpiredException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.security.spec.InvalidKeySpecException;
@@ -23,8 +24,8 @@ import java.util.Objects;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(InvalidKeySpecException.class)
-    public Response<String> invalidKeySpecException(InvalidKeySpecException e) {
+    @ExceptionHandler({InvalidKeySpecException.class, CredentialExpiredException.class})
+    public Response<String> invalidKeySpecException(Exception e) {
         return Response.fail(ResponseCode.LOGIN_AGAIN, "token解析异常,请重新登录");
     }
 

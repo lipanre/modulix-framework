@@ -3,6 +3,8 @@ package com.modulix.framework.security.service;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 
+import javax.security.auth.login.CredentialExpiredException;
+
 /**
  * token service
  *
@@ -33,11 +35,12 @@ public interface TokenService {
     /**
      * 创建refresh token
      *
-     * @param <T>     refresh token携带内容的类型
-     * @param userId refresh token携带的内容
+     * @param <T>      refresh token携带内容的类型
+     * @param userId   refresh token携带的内容
+     * @param clientId
      * @return refresh token字符串
      */
-    <T> String createRefreshToken(T userId);
+    <T> String createRefreshToken(T userId, String clientId);
 
     /**
      * 用户用户id
@@ -46,5 +49,14 @@ public interface TokenService {
      * @param clazz 用户id类型
      * @return 用户id
      */
-    <T> T getUserId(String refreshToken, Class<T> clazz);
+    <T> T getUserId(String refreshToken, Class<T> clazz) throws CredentialExpiredException;
+
+    /**
+     * 移除token
+     *
+     * @param userId   用户id
+     * @param clientId 客户端id
+     * @return 移除结果
+     */
+    Boolean removeToken(Long userId, String clientId);
 }
