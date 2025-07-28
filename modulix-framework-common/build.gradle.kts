@@ -14,4 +14,5 @@ dependencies {
     api(libs.guava)
     api(libs.jackson.databind)
     compileOnly(libs.spring.expression)
+    compileOnly(libs.mybatis.plus.annotation)
 }

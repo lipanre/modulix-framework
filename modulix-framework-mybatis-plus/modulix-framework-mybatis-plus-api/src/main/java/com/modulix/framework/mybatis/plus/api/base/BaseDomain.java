@@ -3,7 +3,9 @@ package com.modulix.framework.mybatis.plus.api.base;
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.modulix.framework.common.core.util.TreeNode;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.FieldNameConstants;
 
 import java.time.LocalDateTime;
@@ -13,9 +15,10 @@ import java.time.LocalDateTime;
  *
  * @author lipanre
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @FieldNameConstants
-public class BaseDomain {
+public class BaseDomain extends TreeNode<Long> {
 
     /**
      * 主键id
@@ -53,30 +56,5 @@ public class BaseDomain {
      */
     @TableLogic(value = "false", delval = "true")
     private Boolean deleted;
-
-    static class ExcludeDTO extends BaseDomain {}
-
-    @Data
-    static class ExcludeVO {
-        private Boolean deleted;
-    }
-
-    @Data
-    static class ExcludeQuery {
-        /**
-         * 创建时间
-         */
-        private LocalDateTime createTime;
-
-        /**
-         * 修改时间
-         */
-        private LocalDateTime modifyTime;
-
-        /**
-         * 删除标记
-         */
-        private Boolean deleted;
-    }
 
 }
