@@ -65,6 +65,7 @@ public class WebConfiguration {
         simpleModule.addSerializer(Long.class, new LongToStringSerializer());
         simpleModule.addSerializer(Long.TYPE, new LongToStringSerializer());
 
+        jsonMapper.registerModule(simpleModule);
         jsonMapper.registerModule(javaTimeModule);
         return jsonMapper;
     }
