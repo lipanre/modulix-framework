@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -15,6 +16,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import com.modulix.framework.web.handler.GlobalExceptionHandler;
+import com.modulix.framework.web.jackson.LongToStringSerializer;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -55,6 +57,13 @@ public class WebConfiguration {
                 .disable(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE)
                 .serializationInclusion(JsonInclude.Include.NON_NULL)
                 .build();
+
+        // 全局配置序列化返回 JSON 处理
+        // JSON Long ==> String
+        // 自定义字符串转化规则ToStringSerializer换成自定义的LongToStringSerializer
+        SimpleModule simpleModule = new SimpleModule();
+        simpleModule.addSerializer(Long.class, new LongToStringSerializer());
+        simpleModule.addSerializer(Long.TYPE, new LongToStringSerializer());
 
         jsonMapper.registerModule(javaTimeModule);
         return jsonMapper;

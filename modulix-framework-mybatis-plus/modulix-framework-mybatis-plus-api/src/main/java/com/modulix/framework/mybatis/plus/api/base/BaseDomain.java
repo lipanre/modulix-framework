@@ -1,8 +1,6 @@
 package com.modulix.framework.mybatis.plus.api.base;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.modulix.framework.common.core.util.TreeNode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,7 +22,6 @@ public class BaseDomain extends TreeNode<Long> {
      * 主键id
      */
     @TableId(type = IdType.ASSIGN_ID)
-    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
     /**
