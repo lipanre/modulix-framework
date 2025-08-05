@@ -1,9 +1,10 @@
 package com.modulix.framework.mybatis.plus.api.base;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.yulichang.base.MPJBaseMapper;
-import com.github.yulichang.query.MPJQueryWrapper;
-import com.github.yulichang.toolkit.JoinWrappers;
-import com.github.yulichang.wrapper.MPJLambdaWrapper;
 
 import java.util.List;
 import java.util.Objects;
@@ -22,7 +23,7 @@ public interface BaseMapper<T extends BaseDomain> extends MPJBaseMapper<T> {
      *
      * @return QueryWrapper
      */
-    default MPJQueryWrapper<T> queryWrapper() {
+    default Wrapper<T> queryWrapper() {
         return queryWrapper(false);
     }
 
@@ -33,8 +34,8 @@ public interface BaseMapper<T extends BaseDomain> extends MPJBaseMapper<T> {
      * @param isDeleted 是否删除
      * @return QueryWrapper
      */
-    default MPJQueryWrapper<T> queryWrapper(boolean isDeleted) {
-        MPJQueryWrapper<T> query = JoinWrappers.query();
+    default Wrapper<T> queryWrapper(boolean isDeleted) {
+        QueryWrapper<T> query = Wrappers.query();
         query.eq(BaseDomain.Fields.deleted, isDeleted);
         return query;
     }
@@ -46,7 +47,7 @@ public interface BaseMapper<T extends BaseDomain> extends MPJBaseMapper<T> {
      * @param entityClass 实体类
      * @return QueryWrapper
      */
-    default MPJLambdaWrapper<T> lambdaQueryWrapper(Class<T> entityClass) {
+    default LambdaQueryWrapper<T> lambdaQueryWrapper(Class<T> entityClass) {
         return lambdaQueryWrapper(entityClass, false);
     }
 
@@ -58,8 +59,8 @@ public interface BaseMapper<T extends BaseDomain> extends MPJBaseMapper<T> {
      * @param isDeleted   是否删除
      * @return QueryWrapper
      */
-    default MPJLambdaWrapper<T> lambdaQueryWrapper(Class<T> entityClass, boolean isDeleted) {
-        MPJLambdaWrapper<T> wrapper = JoinWrappers.lambda(entityClass);
+    default LambdaQueryWrapper<T> lambdaQueryWrapper(Class<T> entityClass, boolean isDeleted) {
+        LambdaQueryWrapper<T> wrapper = Wrappers.lambdaQuery(entityClass);
         wrapper.eq(T::getDeleted, isDeleted);
         return wrapper;
     }
@@ -72,8 +73,8 @@ public interface BaseMapper<T extends BaseDomain> extends MPJBaseMapper<T> {
      * @param <R>            字段类型
      * @return 字段值
      */
-    default <R> R selectColumn(MPJLambdaWrapper<T> wrapper, Function<T, R> columnFunction) {
-        T result = selectJoinOne(wrapper);
+    default <R> R selectColumn(Wrapper<T> wrapper, Function<T, R> columnFunction) {
+        T result = selectOne(wrapper);
         return Objects.isNull(result) ? null : columnFunction.apply(result);
     }
 
@@ -85,8 +86,8 @@ public interface BaseMapper<T extends BaseDomain> extends MPJBaseMapper<T> {
      * @return 字段值列表
      * @param <R> 字段类型
      */
-    default <R> List<R> selectColumnList(MPJLambdaWrapper<T> wrapper, Function<T, R> columnFunction) {
-        List<T> result = selectJoinList(wrapper);
+    default <R> List<R> selectColumnList(Wrapper<T> wrapper, Function<T, R> columnFunction) {
+        List<T> result = selectList(wrapper);
         return result.stream().map(columnFunction).toList();
     }
 
