@@ -1,10 +1,11 @@
 package com.modulix.framework.mybatis.plus.permission;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.extension.plugins.handler.MultiDataPermissionHandler;
 import com.google.common.collect.HashBasedTable;
 import com.modulix.framework.mybatis.plus.api.annotation.DataPermissionHandler;
 import com.modulix.framework.mybatis.plus.api.enums.DataScope;
-import com.modulix.framework.security.api.util.SecurityUtil;
+import com.modulix.framework.security.api.SecurityContext;
 import jakarta.annotation.Resource;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +41,10 @@ public class DataPermissionHandlerImpl implements MultiDataPermissionHandler, Be
     @Resource
     private List<DataPermissionParameterResolver> parameterResolvers;
 
+    @Resource
+    private SecurityContext securityContext;
+
+
     @SuppressWarnings("unchecked")
     @Override
     public Expression getSqlSegment(Table table, Expression where, String mappedStatementId) {
@@ -47,11 +52,11 @@ public class DataPermissionHandlerImpl implements MultiDataPermissionHandler, Be
         // 判断指定类型的数据权限是否需要对指定的表进行数据权限过滤
         // 如果需要过滤则通过DataPermissionHandlerDefinition来构建OR表达式
         // 如果没有登录就不走权限过滤逻辑
-        if (!SecurityUtil.isLogin()) {
+        if (!StpUtil.isLogin()) {
             return null;
         }
         List<Expression> expressions = new ArrayList<>();
-        for (DataScope dataPermission : SecurityUtil.getDataPermissions()) {
+        for (DataScope dataPermission : securityContext.getCurrentDataScopes()) {
             DataPermissionHandlerDefinition dataPermissionHandlerDefinition = dataPermissionTable.get(dataPermission, table.getName());
             if (Objects.isNull(dataPermissionHandlerDefinition)) continue;
             Expression expression = invokeHandler(dataPermissionHandlerDefinition, table);

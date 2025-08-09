@@ -1,5 +1,6 @@
 package com.modulix.framework.mybatis.plus.config;
 
+import cn.dev33.satoken.config.SaTokenConfig;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.DataPermissionInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
@@ -9,7 +10,6 @@ import com.modulix.framework.mybatis.plus.api.page.PaginationInterceptor;
 import com.modulix.framework.mybatis.plus.manager.PostOperationManager;
 import com.modulix.framework.mybatis.plus.meta.BaseDomainMetaObjectHandler;
 import com.modulix.framework.mybatis.plus.permission.DataPermissionHandlerImpl;
-import com.modulix.framework.security.api.util.SecurityUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.aspectj.lang.annotation.Aspect;
@@ -78,7 +78,7 @@ public class MybatisPlusConfiguration {
     }
 
     @Configuration
-    @ConditionalOnClass(SecurityUtil.class)
+    @ConditionalOnClass(SaTokenConfig.class)
     public static class SecurityConfiguration {
 
         @Bean

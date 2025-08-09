@@ -1,8 +1,8 @@
 package com.modulix.framework.mybatis.plus.aop;
 
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.modulix.framework.common.core.function.Consumer3;
-import com.modulix.framework.common.core.util.ArrayUtil;
 import com.modulix.framework.common.core.util.SpelUtil;
 import com.modulix.framework.mybatis.plus.api.annotation.*;
 import com.modulix.framework.mybatis.plus.manager.PostOperationManager;
@@ -13,6 +13,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -108,7 +109,7 @@ public class DataBaseOperationAspect {
         MethodSignature signature = (MethodSignature) pjp.getSignature();
         String[] parameterNames = signature.getParameterNames();
         Object[] parameterValues = pjp.getArgs();
-        Map<String, Object> methodParamMap = ArrayUtil.zip(parameterNames, parameterValues);
+        Map<String, Object> methodParamMap = CollUtil.zip(Arrays.asList(parameterNames), Arrays.asList(parameterValues));
 
 
         // 转换条件，并生成参数
