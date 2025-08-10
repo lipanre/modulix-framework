@@ -1,6 +1,8 @@
 package com.modulix.framework.mybatis.plus.permission;
 
 import cn.dev33.satoken.stp.StpUtil;
+import com.baomidou.mybatisplus.core.plugins.IgnoreStrategy;
+import com.baomidou.mybatisplus.core.plugins.InterceptorIgnoreHelper;
 import com.baomidou.mybatisplus.extension.plugins.handler.MultiDataPermissionHandler;
 import com.google.common.collect.HashBasedTable;
 import com.modulix.framework.mybatis.plus.api.annotation.DataPermissionHandler;
@@ -15,6 +17,7 @@ import net.sf.jsqlparser.expression.operators.relational.ParenthesedExpressionLi
 import net.sf.jsqlparser.schema.Table;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 
@@ -41,6 +44,7 @@ public class DataPermissionHandlerImpl implements MultiDataPermissionHandler, Be
     @Resource
     private List<DataPermissionParameterResolver> parameterResolvers;
 
+    @Lazy
     @Resource
     private SecurityContext securityContext;
 
@@ -53,6 +57,11 @@ public class DataPermissionHandlerImpl implements MultiDataPermissionHandler, Be
         // 如果需要过滤则通过DataPermissionHandlerDefinition来构建OR表达式
         // 如果没有登录就不走权限过滤逻辑
         if (!StpUtil.isLogin()) {
+            return null;
+        }
+
+        IgnoreStrategy ignoreStrategy = InterceptorIgnoreHelper.getIgnoreStrategy(mappedStatementId);
+        if (Objects.nonNull(ignoreStrategy) && ignoreStrategy.getDataPermission()) {
             return null;
         }
         List<Expression> expressions = new ArrayList<>();

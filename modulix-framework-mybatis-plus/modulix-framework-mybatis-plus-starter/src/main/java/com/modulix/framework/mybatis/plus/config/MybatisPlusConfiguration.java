@@ -2,6 +2,7 @@ package com.modulix.framework.mybatis.plus.config;
 
 import cn.dev33.satoken.config.SaTokenConfig;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.handler.MultiDataPermissionHandler;
 import com.baomidou.mybatisplus.extension.plugins.inner.DataPermissionInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
 import com.modulix.framework.mybatis.plus.aop.DataBaseOperationAspect;
@@ -10,6 +11,8 @@ import com.modulix.framework.mybatis.plus.api.page.PaginationInterceptor;
 import com.modulix.framework.mybatis.plus.manager.PostOperationManager;
 import com.modulix.framework.mybatis.plus.meta.BaseDomainMetaObjectHandler;
 import com.modulix.framework.mybatis.plus.permission.DataPermissionHandlerImpl;
+import com.modulix.framework.mybatis.plus.permission.DataPermissionParameterResolver;
+import com.modulix.framework.mybatis.plus.permission.resolve.TableMethodParameterResolver;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.aspectj.lang.annotation.Aspect;
@@ -87,8 +90,18 @@ public class MybatisPlusConfiguration {
         }
 
         @Bean
-        public DataPermissionInterceptor dataPermissionHandler() {
-            return new DataPermissionInterceptor(new DataPermissionHandlerImpl());
+        public DataPermissionParameterResolver tableMethodParameterResolver() {
+            return new TableMethodParameterResolver();
+        }
+
+        @Bean
+        public DataPermissionInterceptor dataPermissionInterceptor() {
+            return new DataPermissionInterceptor(dataPermissionHandler());
+        }
+
+        @Bean
+        public MultiDataPermissionHandler dataPermissionHandler() {
+            return new DataPermissionHandlerImpl();
         }
 
     }

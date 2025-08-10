@@ -31,6 +31,7 @@ hutool-core = { module = "cn.hutool:hutool-core", version.ref="hutool-version"}
 sa-token-starter = {module = "cn.dev33:sa-token-spring-boot3-starter", version.ref="sa-token-version"}
 sa-token-core = {module = "cn.dev33:sa-token-core", version.ref="sa-token-version"}
 sa-token-jwt = {module = "cn.dev33:sa-token-jwt", version.ref="sa-token-version"}
+sa-token-temp-jwt = {module = "cn.dev33:sa-token-temp-jwt", version.ref="sa-token-version"}
 
 # mybatis-plus
 mybatis-plus-bom = { module = "com.baomidou:mybatis-plus-bom", version.ref = "mybatis-plus-version" }

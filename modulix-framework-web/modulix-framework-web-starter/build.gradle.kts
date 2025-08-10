@@ -9,5 +9,6 @@ dependencies {
     api(project(":modulix-framework-web:modulix-framework-web-api"))
     api(project(":modulix-framework-common"))
 
+    api(libs.sa.token.core)
     api(libs.spring.boot.starter.web)
 }
