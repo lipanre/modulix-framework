@@ -3,6 +3,7 @@ package com.modulix.framework.mybatis.plus.meta;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.modulix.framework.mybatis.plus.api.base.BaseDomain;
+import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.reflection.MetaObject;
 
 import java.time.LocalDateTime;
@@ -14,6 +15,16 @@ import java.time.LocalDateTime;
  * {@code date} 2025/2/17 12:06
  */
 public class BaseDomainMetaObjectHandler implements MetaObjectHandler {
+
+    @Override
+    public boolean openInsertFill(MappedStatement mappedStatement) {
+        return StpUtil.isLogin();
+    }
+
+    @Override
+    public boolean openUpdateFill(MappedStatement mappedStatement) {
+        return StpUtil.isLogin();
+    }
 
     @Override
     public void insertFill(MetaObject metaObject) {
