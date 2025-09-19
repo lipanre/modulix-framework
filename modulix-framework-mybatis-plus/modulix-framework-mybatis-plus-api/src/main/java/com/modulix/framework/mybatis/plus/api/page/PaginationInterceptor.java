@@ -46,7 +46,12 @@ public class PaginationInterceptor extends PaginationInnerInterceptor {
         }
         // 构建分页参数
         parameter = buildPageParam(pageRequestInfo.getPage(), parameter);
-        return super.willDoQuery(executor, ms, parameter, rowBounds, resultHandler, boundSql);
+        try {
+            return super.willDoQuery(executor, ms, parameter, rowBounds, resultHandler, boundSql);
+        } finally {
+            // 执行第一次查询之后,后续查询取消分页
+            pageRequestInfo.setPageable(false);
+        }
     }
 
     @Override
