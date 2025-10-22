@@ -18,12 +18,12 @@ public class BaseDomainMetaObjectHandler implements MetaObjectHandler {
 
     @Override
     public boolean openInsertFill(MappedStatement mappedStatement) {
-        return StpUtil.isLogin();
+        return checkLogin();
     }
 
     @Override
     public boolean openUpdateFill(MappedStatement mappedStatement) {
-        return StpUtil.isLogin();
+        return checkLogin();
     }
 
     @Override
@@ -36,5 +36,19 @@ public class BaseDomainMetaObjectHandler implements MetaObjectHandler {
     public void updateFill(MetaObject metaObject) {
         this.strictUpdateFill(metaObject, BaseDomain.Fields.modifierId, Long.class, StpUtil.getLoginIdAsLong());
         this.strictUpdateFill(metaObject, BaseDomain.Fields.modifyTime, LocalDateTime.class, LocalDateTime.now());
+    }
+
+    /**
+     * 检查是否登录
+     *
+     * @return true - 已登录 <br>
+     *         false - 未登录
+     */
+    private static boolean checkLogin() {
+        try {
+            return StpUtil.isLogin();
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
