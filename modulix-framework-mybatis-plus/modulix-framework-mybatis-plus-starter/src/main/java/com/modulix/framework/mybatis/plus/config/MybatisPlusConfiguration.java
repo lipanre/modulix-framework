@@ -9,7 +9,8 @@ import com.modulix.framework.mybatis.plus.aop.DataBaseOperationAspect;
 import com.modulix.framework.mybatis.plus.aop.PageRequestAspect;
 import com.modulix.framework.mybatis.plus.api.page.PaginationInterceptor;
 import com.modulix.framework.mybatis.plus.manager.PostOperationManager;
-import com.modulix.framework.mybatis.plus.meta.BaseDomainMetaObjectHandler;
+import com.modulix.framework.mybatis.plus.meta.TimeMetaObjectHandler;
+import com.modulix.framework.mybatis.plus.meta.UserMetaObjectHandler;
 import com.modulix.framework.mybatis.plus.permission.DataPermissionHandlerImpl;
 import com.modulix.framework.mybatis.plus.permission.DataPermissionParameterResolver;
 import com.modulix.framework.mybatis.plus.permission.resolve.TableMethodParameterResolver;
@@ -85,8 +86,13 @@ public class MybatisPlusConfiguration {
     public static class SecurityConfiguration {
 
         @Bean
-        public BaseDomainMetaObjectHandler baseDomainMetaObjectHandler() {
-            return new BaseDomainMetaObjectHandler();
+        public UserMetaObjectHandler baseDomainMetaObjectHandler() {
+            return new UserMetaObjectHandler();
+        }
+
+        @Bean
+        public TimeMetaObjectHandler timeMetaObjectHandler() {
+            return new TimeMetaObjectHandler();
         }
 
         @Bean
