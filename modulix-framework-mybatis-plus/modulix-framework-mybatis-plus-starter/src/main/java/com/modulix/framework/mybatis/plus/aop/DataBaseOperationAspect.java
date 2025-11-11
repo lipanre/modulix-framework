@@ -1,6 +1,5 @@
 package com.modulix.framework.mybatis.plus.aop;
 
-import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.modulix.framework.common.core.function.Consumer3;
 import com.modulix.framework.common.core.util.SpelUtil;
@@ -13,7 +12,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -107,9 +105,7 @@ public class DataBaseOperationAspect {
                              Consumer3<String, Map<String, Object>, Map<String, Object>> operation) {
 
         MethodSignature signature = (MethodSignature) pjp.getSignature();
-        String[] parameterNames = signature.getParameterNames();
-        Object[] parameterValues = pjp.getArgs();
-        Map<String, Object> methodParamMap = CollUtil.zip(Arrays.asList(parameterNames), Arrays.asList(parameterValues));
+        Map<String, Object> methodParamMap = zipParams(pjp, signature);
 
 
         // 转换条件，并生成参数
@@ -125,6 +121,22 @@ public class DataBaseOperationAspect {
             start = matcher.end();
         }
         operation.accept(condition, paramMap, methodParamMap);
+    }
+
+    /**
+     * 将参数转为map
+     *
+     * @param pjp       切面JoinPoint对象
+     * @param signature 方法签名对象
+     * @return 参数map
+     */
+    private static Map<String, Object> zipParams(ProceedingJoinPoint pjp, MethodSignature signature) {
+        String[] parameterNames = signature.getParameterNames();
+        Object[] parameterValues = pjp.getArgs();
+
+        Map<String, Object> methodParamMap = new HashMap<>();
+        IntStream.range(0, parameterNames.length).forEach(i -> methodParamMap.put(parameterNames[i], parameterValues[i]));
+        return methodParamMap;
     }
 
     private static String buildCondition(String condition, int paramIndex, Matcher matcher, Map<String, Object> paramMap, Map<String, Object> methodParamMap) {
