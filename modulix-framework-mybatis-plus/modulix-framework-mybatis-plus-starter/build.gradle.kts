@@ -17,7 +17,6 @@ dependencies {
     api(project(":modulix-framework-web:modulix-framework-web-api"))
     compileOnly(project(":modulix-framework-security:modulix-framework-security-api"))
 
-    api(libs.hutool.core)
     api(libs.jakarta.servlet.api)
     api(libs.jackson.databind)
     api(libs.spring.web)
