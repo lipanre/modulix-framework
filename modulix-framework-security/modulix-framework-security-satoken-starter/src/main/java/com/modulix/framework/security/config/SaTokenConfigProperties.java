@@ -19,4 +19,9 @@ public class SaTokenConfigProperties {
      */
     private List<String> ignoreAuthUrls;
 
+    /**
+     * 模拟登录token前缀
+     */
+    private String mockTokenPrefix;
+
 }

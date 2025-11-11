@@ -26,6 +26,17 @@ public class SaTokenAutoConfiguration implements WebMvcConfigurer {
     @Resource
     private SaTokenConfigProperties saTokenConfigProperties;
 
+    /**
+     * 模拟登录拦截器
+     * 用于模拟登录，在请求头中携带 {@code sa-token=mock:userId} 即可模拟登录
+     *
+     * @return 模拟登录拦截器
+     */
+    @Bean
+    public MockAuthInterceptor mockAuthInterceptor() {
+        return new MockAuthInterceptor();
+    }
+
 
     /**
      * 默认所有接口都需要认证之后才能走下去
@@ -35,6 +46,7 @@ public class SaTokenAutoConfiguration implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new RequestInfoInterceptor());
+        registry.addInterceptor(mockAuthInterceptor());
         registry.addInterceptor(new SaInterceptor(handler -> StpUtil.checkLogin()))
                 .excludePathPatterns(Objects.nonNull(saTokenConfigProperties.getIgnoreAuthUrls()) ?
                         saTokenConfigProperties.getIgnoreAuthUrls() : Collections.emptyList())
