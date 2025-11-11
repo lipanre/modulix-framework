@@ -1,6 +1,5 @@
 package com.modulix.framework.web.config;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.json.JsonReadFeature;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
@@ -55,7 +54,6 @@ public class WebConfiguration {
                 .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
                 .disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)
                 .disable(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE)
-                .serializationInclusion(JsonInclude.Include.NON_NULL)
                 .build();
 
         // 全局配置序列化返回 JSON 处理
