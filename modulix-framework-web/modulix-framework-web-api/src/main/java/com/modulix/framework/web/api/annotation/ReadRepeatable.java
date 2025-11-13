@@ -1,4 +1,4 @@
-package com.modulix.framework.web.aip.annotation;
+package com.modulix.framework.web.api.annotation;
 
 import java.lang.annotation.*;
 

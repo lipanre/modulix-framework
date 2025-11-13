@@ -2,9 +2,9 @@ package com.modulix.framework.web.handler;
 
 import cn.dev33.satoken.exception.NotLoginException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import com.modulix.framework.web.aip.constant.ResponseCode;
-import com.modulix.framework.web.aip.exception.BizException;
-import com.modulix.framework.web.aip.http.Response;
+import com.modulix.framework.web.api.constant.ResponseCode;
+import com.modulix.framework.web.api.exception.BizException;
+import com.modulix.framework.web.api.http.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;

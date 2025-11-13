@@ -1,7 +1,7 @@
 package com.modulix.framework.web.service.impl;
 
 
-import com.modulix.framework.web.aip.annotation.ReadRepeatable;
+import com.modulix.framework.web.api.annotation.ReadRepeatable;
 import com.modulix.framework.web.service.HttpService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;

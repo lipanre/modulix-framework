@@ -1,6 +1,6 @@
 package com.modulix.framework.web.filter;
 
-import com.modulix.framework.web.aip.http.RepeatReadableRequest;
+import com.modulix.framework.web.api.http.RepeatReadableRequest;
 import com.modulix.framework.web.service.HttpService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

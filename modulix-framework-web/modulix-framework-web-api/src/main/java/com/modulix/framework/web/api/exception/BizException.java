@@ -1,4 +1,4 @@
-package com.modulix.framework.web.aip.exception;
+package com.modulix.framework.web.api.exception;
 
 /**
  * 业务异常类

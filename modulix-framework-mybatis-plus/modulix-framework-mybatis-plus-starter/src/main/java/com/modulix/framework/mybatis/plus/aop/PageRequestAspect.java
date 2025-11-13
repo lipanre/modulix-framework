@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.modulix.framework.mybatis.plus.api.annotation.PageRequest;
 import com.modulix.framework.mybatis.plus.api.page.PageContextHolder;
 import com.modulix.framework.mybatis.plus.api.page.PageRequestInfo;
-import com.modulix.framework.web.aip.http.Response;
+import com.modulix.framework.web.api.http.Response;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.SneakyThrows;
 import org.aspectj.lang.ProceedingJoinPoint;

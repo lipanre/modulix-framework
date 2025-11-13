@@ -1,9 +1,9 @@
-package com.modulix.framework.web.aip.util;
+package com.modulix.framework.web.api.util;
 
 
 import com.modulix.framework.common.core.util.JsonUtil;
-import com.modulix.framework.web.aip.exception.BizException;
-import com.modulix.framework.web.aip.http.Response;
+import com.modulix.framework.web.api.exception.BizException;
+import com.modulix.framework.web.api.http.Response;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;

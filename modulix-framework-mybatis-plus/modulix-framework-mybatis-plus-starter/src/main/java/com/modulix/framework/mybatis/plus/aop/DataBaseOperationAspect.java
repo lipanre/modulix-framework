@@ -5,7 +5,7 @@ import com.modulix.framework.common.core.function.Consumer3;
 import com.modulix.framework.common.core.util.SpelUtil;
 import com.modulix.framework.mybatis.plus.api.annotation.*;
 import com.modulix.framework.mybatis.plus.manager.PostOperationManager;
-import com.modulix.framework.web.aip.exception.BizException;
+import com.modulix.framework.web.api.exception.BizException;
 import jakarta.annotation.Resource;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;

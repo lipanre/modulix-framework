@@ -7,7 +7,7 @@ import java.lang.annotation.*;
  * 分页请求
  * <br>
  * 被注解的方法必须要返回一下类型：
- * @see com.modulix.framework.web.aip.http.Response
+ * @see com.modulix.framework.web.api.http.Response
  *
  * @author lipanre
  */

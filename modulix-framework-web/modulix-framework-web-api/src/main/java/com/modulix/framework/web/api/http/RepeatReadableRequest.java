@@ -1,4 +1,4 @@
-package com.modulix.framework.web.aip.http;
+package com.modulix.framework.web.api.http;
 
 import jakarta.servlet.ReadListener;
 import jakarta.servlet.ServletInputStream;

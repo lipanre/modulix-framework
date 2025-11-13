@@ -37,6 +37,16 @@ public class SaTokenAutoConfiguration implements WebMvcConfigurer {
         return new MockAuthInterceptor();
     }
 
+    /**
+     * 安全上下文初始化拦截器
+     *
+     * @return 安全上下文初始化拦截器
+     */
+    @Bean
+    public SecurityContextInitInterceptor securityContextInitInterceptor() {
+        return new SecurityContextInitInterceptor();
+    }
+
 
     /**
      * 默认所有接口都需要认证之后才能走下去
@@ -51,6 +61,7 @@ public class SaTokenAutoConfiguration implements WebMvcConfigurer {
                 .excludePathPatterns(Objects.nonNull(saTokenConfigProperties.getIgnoreAuthUrls()) ?
                         saTokenConfigProperties.getIgnoreAuthUrls() : Collections.emptyList())
                 .addPathPatterns("/**");
+        registry.addInterceptor(securityContextInitInterceptor());
     }
 
     // Sa-Token 整合 jwt (Stateless 无状态模式)

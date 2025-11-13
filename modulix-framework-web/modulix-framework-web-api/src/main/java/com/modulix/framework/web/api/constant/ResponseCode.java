@@ -1,4 +1,4 @@
-package com.modulix.framework.web.aip.constant;
+package com.modulix.framework.web.api.constant;
 
 /**
  * 业务响应码

@@ -7,6 +7,7 @@ plugins {
 
 dependencies {
     api(project(":modulix-framework-security:modulix-framework-security-api"))
+    api(project(":modulix-framework-mybatis-plus:modulix-framework-mybatis-plus-api"))
     implementation(libs.spring.boot.starter.web)
     implementation(libs.sa.token.jwt)
     implementation(libs.sa.token.temp.jwt)

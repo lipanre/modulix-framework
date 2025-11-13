@@ -3,6 +3,7 @@ package com.modulix.framework.mybatis.plus.meta;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.modulix.framework.mybatis.plus.api.base.BaseDomain;
+import com.modulix.framework.security.api.SecurityUtil;
 import org.apache.ibatis.reflection.MetaObject;
 
 import java.time.LocalDateTime;
@@ -17,7 +18,7 @@ public class BaseDomainMetaObjectHandler implements MetaObjectHandler {
 
     @Override
     public void insertFill(MetaObject metaObject) {
-        if (checkLogin()) {
+        if (SecurityUtil.isLogin()) {
             this.strictInsertFill(metaObject, BaseDomain.Fields.creatorId, Long.class, StpUtil.getLoginIdAsLong());
         }
         this.strictInsertFill(metaObject, BaseDomain.Fields.createTime, LocalDateTime.class, LocalDateTime.now());
@@ -25,23 +26,9 @@ public class BaseDomainMetaObjectHandler implements MetaObjectHandler {
 
     @Override
     public void updateFill(MetaObject metaObject) {
-        if (checkLogin()) {
+        if (SecurityUtil.isLogin()) {
             this.strictUpdateFill(metaObject, BaseDomain.Fields.modifierId, Long.class, StpUtil.getLoginIdAsLong());
         }
         this.strictUpdateFill(metaObject, BaseDomain.Fields.modifyTime, LocalDateTime.class, LocalDateTime.now());
-    }
-
-    /**
-     * 检查是否登录
-     *
-     * @return true - 已登录 <br>
-     *         false - 未登录
-     */
-    private static boolean checkLogin() {
-        try {
-            return StpUtil.isLogin();
-        } catch (Exception e) {
-            return false;
-        }
     }
 }

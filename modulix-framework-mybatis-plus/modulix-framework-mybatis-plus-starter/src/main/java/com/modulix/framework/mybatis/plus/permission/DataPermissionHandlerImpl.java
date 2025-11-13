@@ -1,15 +1,15 @@
 package com.modulix.framework.mybatis.plus.permission;
 
-import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.plugins.IgnoreStrategy;
 import com.baomidou.mybatisplus.core.plugins.InterceptorIgnoreHelper;
 import com.baomidou.mybatisplus.extension.plugins.handler.MultiDataPermissionHandler;
 import com.google.common.collect.HashBasedTable;
 import com.modulix.framework.mybatis.plus.api.annotation.DataPermissionHandler;
 import com.modulix.framework.mybatis.plus.api.enums.DataScope;
-import com.modulix.framework.security.api.SecurityContext;
+import com.modulix.framework.security.api.SecurityUtil;
 import jakarta.annotation.Resource;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.operators.conditional.OrExpression;
@@ -17,7 +17,6 @@ import net.sf.jsqlparser.expression.operators.relational.ParenthesedExpressionLi
 import net.sf.jsqlparser.schema.Table;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 
@@ -39,14 +38,10 @@ public class DataPermissionHandlerImpl implements MultiDataPermissionHandler, Be
     /**
      * 数据权限类型 + 表名 ==> 数据权限处理器定义
      */
-    private static final HashBasedTable<DataScope, String, DataPermissionHandlerDefinition> dataPermissionTable = HashBasedTable.create();
+    private static final HashBasedTable<@NonNull DataScope, @NonNull String, @NonNull DataPermissionHandlerDefinition> dataPermissionTable = HashBasedTable.create();
 
     @Resource
     private List<DataPermissionParameterResolver> parameterResolvers;
-
-    @Lazy
-    @Resource
-    private SecurityContext securityContext;
 
 
     @SuppressWarnings("unchecked")
@@ -56,11 +51,7 @@ public class DataPermissionHandlerImpl implements MultiDataPermissionHandler, Be
         // 判断指定类型的数据权限是否需要对指定的表进行数据权限过滤
         // 如果需要过滤则通过DataPermissionHandlerDefinition来构建OR表达式
         // 如果没有登录就不走权限过滤逻辑
-        try {
-            if (!StpUtil.isLogin()) {
-                return null;
-            }
-        } catch (Exception e) {
+        if (!SecurityUtil.isLogin() || SecurityUtil.isSuperAdmin() || SecurityUtil.isAdmin()) {
             return null;
         }
 
@@ -69,7 +60,7 @@ public class DataPermissionHandlerImpl implements MultiDataPermissionHandler, Be
             return null;
         }
         List<Expression> expressions = new ArrayList<>();
-        for (DataScope dataPermission : securityContext.getCurrentDataScopes()) {
+        for (DataScope dataPermission : SecurityUtil.getCurrentDataScopes()) {
             DataPermissionHandlerDefinition dataPermissionHandlerDefinition = dataPermissionTable.get(dataPermission, table.getName());
             if (Objects.isNull(dataPermissionHandlerDefinition)) continue;
             Expression expression = invokeHandler(dataPermissionHandlerDefinition, table);

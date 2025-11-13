@@ -1,6 +1,6 @@
-package com.modulix.framework.web.aip.http;
+package com.modulix.framework.web.api.http;
 
-import com.modulix.framework.web.aip.constant.ResponseCode;
+import com.modulix.framework.web.api.constant.ResponseCode;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
