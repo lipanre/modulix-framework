@@ -22,17 +22,19 @@ public class SecurityContextInitInterceptor implements HandlerInterceptor {
     @SuppressWarnings("unchecked")
     @Override
     public boolean preHandle(@Nonnull HttpServletRequest request, @Nonnull HttpServletResponse response, @Nonnull Object handler) throws Exception {
-        SecurityUser securityUser = new SecurityUser();
-        securityUser.setUserId(StpUtil.getLoginIdAsLong());
-        securityUser.setDataScopes((Set<DataScope>) StpUtil.getExtra(SecurityUser.Fields.dataScopes));
-        securityUser.setRoleCodes((Set<String>) StpUtil.getExtra(SecurityUser.Fields.roleCodes));
-        securityUser.setClientType(request.getHeader(HttpHeader.CLIENT_TYPE));
-        SecurityUtil.setCurrentUser(securityUser);
+        if (StpUtil.isLogin()) {
+            SecurityUser securityUser = new SecurityUser();
+            securityUser.setUserId(StpUtil.getLoginIdAsLong());
+            securityUser.setDataScopes((Set<DataScope>) StpUtil.getExtra(SecurityUser.Fields.dataScopes));
+            securityUser.setRoleCodes((Set<String>) StpUtil.getExtra(SecurityUser.Fields.roleCodes));
+            securityUser.setClientType(request.getHeader(HttpHeader.CLIENT_TYPE));
+            SecurityUtil.setCurrentUser(securityUser);
+        }
         return true;
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+    public void afterCompletion(@Nonnull HttpServletRequest request, @Nonnull HttpServletResponse response, @Nonnull Object handler, Exception ex) throws Exception {
         // 清除缓存
         SecurityUtil.clearCurrentUser();
     }
