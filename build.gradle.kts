@@ -6,7 +6,7 @@ plugins {
 
 allprojects {
     group = "io.github.lipanre"
-    version = "0.0.20"
+    version = "0.0.21"
 
     repositories {
         mavenCentral()
