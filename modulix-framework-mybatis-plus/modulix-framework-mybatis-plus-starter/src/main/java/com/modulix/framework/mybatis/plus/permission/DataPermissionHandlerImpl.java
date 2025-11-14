@@ -51,7 +51,7 @@ public class DataPermissionHandlerImpl implements MultiDataPermissionHandler, Be
         // 判断指定类型的数据权限是否需要对指定的表进行数据权限过滤
         // 如果需要过滤则通过DataPermissionHandlerDefinition来构建OR表达式
         // 如果没有登录就不走权限过滤逻辑
-        if (!SecurityUtil.isLogin() || SecurityUtil.isSuperAdmin() || SecurityUtil.isAdmin()) {
+        if (!SecurityUtil.isLogin() || SecurityUtil.isSuperAdmin() || SecurityUtil.isAdmin() || Objects.isNull(SecurityUtil.getCurrentDataScopes())) {
             return null;
         }
 
