@@ -37,6 +37,11 @@ public class MockAuthInterceptor implements HandlerInterceptor {
         if (StringUtils.startsWithIgnoreCase(token, saTokenConfigProperties.getMockTokenPrefix())) {
             SecurityService securityService = securityServiceFactory.getDefaultSecurityService(request.getHeader(HttpHeader.CLIENT_TYPE));
             Long userId = Long.parseLong(token.substring(saTokenConfigProperties.getMockTokenPrefix().length()));
+            // 如果已经登录了,就直接创建一个登录会话数据,避免重复登录
+            if (StpUtil.isLogin(userId)) {
+                StpUtil.createLoginSession(userId, securityService.createLoginParameter(userId));
+                return true;
+            }
             // 直接模拟登录
             StpUtil.login(userId, securityService.createLoginParameter(userId));
         }
