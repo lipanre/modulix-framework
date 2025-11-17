@@ -7,6 +7,7 @@ import com.modulix.framework.security.api.info.SecurityUser;
 
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  * security 工具类
@@ -34,6 +35,17 @@ public class SecurityUtil {
      */
     public static SecurityUser getCurrentUser() {
         return currentUser.get();
+    }
+
+    /**
+     * 获取当前登录用户信息
+     *
+     * @param infoGet 用户信息get函数
+     * @return  用户信息
+     * @param <T> 用户信息类型
+     */
+    public static <T> T getUserInfo(Function<SecurityUser, T> infoGet) {
+        return infoGet.apply(SecurityUtil.getCurrentUser());
     }
 
     /**

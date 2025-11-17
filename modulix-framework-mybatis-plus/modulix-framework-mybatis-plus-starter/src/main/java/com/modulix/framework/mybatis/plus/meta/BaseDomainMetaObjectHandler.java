@@ -4,6 +4,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.modulix.framework.mybatis.plus.api.base.BaseDomain;
 import com.modulix.framework.security.api.SecurityUtil;
+import com.modulix.framework.security.api.info.SecurityUser;
 import org.apache.ibatis.reflection.MetaObject;
 
 import java.time.LocalDateTime;
@@ -19,7 +20,7 @@ public class BaseDomainMetaObjectHandler implements MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {
         if (SecurityUtil.isLogin()) {
-            this.strictInsertFill(metaObject, BaseDomain.Fields.creatorId, Long.class, StpUtil.getLoginIdAsLong());
+            this.strictInsertFill(metaObject, BaseDomain.Fields.creatorId, Long.class, SecurityUtil.getUserInfo(SecurityUser::getUserId));
         }
         this.strictInsertFill(metaObject, BaseDomain.Fields.createTime, LocalDateTime.class, LocalDateTime.now());
     }
@@ -27,7 +28,7 @@ public class BaseDomainMetaObjectHandler implements MetaObjectHandler {
     @Override
     public void updateFill(MetaObject metaObject) {
         if (SecurityUtil.isLogin()) {
-            this.strictUpdateFill(metaObject, BaseDomain.Fields.modifierId, Long.class, StpUtil.getLoginIdAsLong());
+            this.strictUpdateFill(metaObject, BaseDomain.Fields.modifierId, Long.class, SecurityUtil.getUserInfo(SecurityUser::getUserId));
         }
         this.strictUpdateFill(metaObject, BaseDomain.Fields.modifyTime, LocalDateTime.class, LocalDateTime.now());
     }

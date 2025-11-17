@@ -18,7 +18,7 @@ public class SecurityUser {
     /**
      * 用户id
      */
-    private Object userId;
+    private Long userId;
 
     /**
      * 当前用户数据权限列表
