@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.modulix.framework.mybatis.plus.api.annotation.PageRequest;
+import com.modulix.framework.mybatis.plus.api.annotation.PageStatement;
 import com.modulix.framework.mybatis.plus.api.page.PageContextHolder;
-import com.modulix.framework.mybatis.plus.api.page.PageRequestInfo;
 import com.modulix.framework.web.api.http.Response;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.SneakyThrows;
@@ -57,19 +57,15 @@ public class PageRequestAspect {
         if (Objects.isNull(servletRequestAttributes)) {
             return pjp.proceed();
         }
-        PageRequestInfo<Object> pageRequestInfo = new PageRequestInfo<>();
         HttpServletRequest request = servletRequestAttributes.getRequest();
         String pageNum = getParameter(request, pageRequest.pageNum());
         String pageSize = getParameter(request, pageRequest.pageSize());
         if (Objects.isNull(pageNum) && Objects.isNull(pageSize)) {
-            pageRequestInfo.setPageable(false);
             return pjp.proceed();
         }
-        pageRequestInfo.setPageable(true);
         Page<Object> page = getPage(pageNum, pageSize);
-        pageRequestInfo.setPage(page);
         try {
-            PageContextHolder.setPageRequestInfo(pageRequestInfo);
+            PageContextHolder.setPageRequestInfo(page);
             // 这里后面需要将响应内容替换为分页内容
             Object result = pjp.proceed();
             if (!(result instanceof Response<?>) || !(((Response<?>) result).getData() instanceof List<?>)) {
@@ -82,6 +78,17 @@ public class PageRequestAspect {
         } finally {
             // 移除缓存
             PageContextHolder.removePageRequestInfo();
+        }
+    }
+
+    @Around("@annotation(pageStatement)")
+    public Object pageStatementAround(ProceedingJoinPoint pjp, PageStatement pageStatement) throws Throwable {
+        try {
+            PageContextHolder.setPageAble(Objects.nonNull(PageContextHolder.getPageRequestInfo()));
+            return pjp.proceed();
+        } finally {
+            // 移除缓存
+            PageContextHolder.endPage();
         }
     }
 

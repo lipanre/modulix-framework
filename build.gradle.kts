@@ -6,7 +6,12 @@ plugins {
 
 allprojects {
     group = "io.github.lipanre"
-    version = "0.0.23"
+    version = "0.0.24"
+
+    tasks.withType<JavaCompile> {
+        options.compilerArgs.add("-parameters")
+        options.encoding = "UTF-8"
+    }
 
     repositories {
         mavenCentral()

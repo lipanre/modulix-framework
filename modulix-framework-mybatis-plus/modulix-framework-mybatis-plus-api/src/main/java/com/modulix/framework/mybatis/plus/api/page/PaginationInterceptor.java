@@ -12,8 +12,10 @@ import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
+import org.springframework.util.ReflectionUtils;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -36,34 +38,29 @@ public class PaginationInterceptor extends PaginationInnerInterceptor {
     @Override
     public boolean willDoQuery(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) throws SQLException {
         IgnoreStrategy ignoreStrategy = InterceptorIgnoreHelper.getIgnoreStrategy(ms.getId());
-        if (Objects.nonNull(ignoreStrategy) && Boolean.TRUE.equals(ignoreStrategy.getOthers().get(IGNORE_KEY))) {
+        if (Objects.nonNull(ignoreStrategy) && Boolean.TRUE.equals(ignoreStrategy.getOthers().get(IGNORE_KEY)) && !PageContextHolder.getPageAble()) {
             return false;
         }
         // 如果请求是分页请求，在这里通过注解构建Page对象，传递给上一层进行调用
-        PageRequestInfo<Object> pageRequestInfo = PageContextHolder.getPageRequestInfo();
-        if (Objects.isNull(pageRequestInfo) || !pageRequestInfo.isPageable()) {
+        if (!PageContextHolder.getPageAble()) {
             return super.willDoQuery(executor, ms, parameter, rowBounds, resultHandler, boundSql);
         }
         // 构建分页参数
-        parameter = buildPageParam(pageRequestInfo.getPage(), parameter);
-        try {
-            return super.willDoQuery(executor, ms, parameter, rowBounds, resultHandler, boundSql);
-        } finally {
-            // 执行第一次查询之后,后续查询取消分页
-            pageRequestInfo.setPageable(false);
-        }
+        Page<Object> page = PageContextHolder.getPageRequestInfo();
+        parameter = buildPageParam(page, parameter);
+        return super.willDoQuery(executor, ms, parameter, rowBounds, resultHandler, boundSql);
     }
 
     @Override
     public void beforeQuery(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
         // 如果请求是分页请求，在这里通过注解构建Page对象，传递给上一层进行调用
-        PageRequestInfo<Object> pageRequestInfo = PageContextHolder.getPageRequestInfo();
-        if (Objects.isNull(pageRequestInfo) || !pageRequestInfo.isPageable()) {
+        if (!PageContextHolder.getPageAble()) {
             super.beforeQuery(executor, ms, parameter, rowBounds, resultHandler, boundSql);
             return;
         }
+        Page<Object> page = PageContextHolder.getPageRequestInfo();
         // 构建分页参数
-        parameter = buildPageParam(pageRequestInfo.getPage(), parameter);
+        parameter = buildPageParam(page, parameter);
         super.beforeQuery(executor, ms, parameter, rowBounds, resultHandler, boundSql);
     }
 
@@ -84,6 +81,16 @@ public class PaginationInterceptor extends PaginationInnerInterceptor {
                 // 如果配置了注解，又在方法上使用了Page参数，那么以方法上的page参数为准
                 return parameterObject;
             }
+            // todo 还需要考虑参数类型是集合的情况
+            Map<String, Object> params = new HashMap<>();
+            ReflectionUtils.doWithFields(parameterObject.getClass(), field -> {
+                field.setAccessible(true);
+                Object fieldValue = field.get(parameterObject);
+                if (Objects.isNull(fieldValue)) return;
+                params.put(field.getName(), fieldValue);
+            });
+            params.put(PARAMETER_NAME, page);
+            return params;
         }
         return page;
     }
