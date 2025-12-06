@@ -1,6 +1,5 @@
 package com.modulix.framework.mybatis.plus.config;
 
-import cn.dev33.satoken.config.SaTokenConfig;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.handler.MultiDataPermissionHandler;
 import com.baomidou.mybatisplus.extension.plugins.inner.DataPermissionInterceptor;
@@ -20,6 +19,7 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.web.context.request.RequestContextHolder;
 
 import java.util.List;
@@ -33,6 +33,7 @@ import java.util.List;
  */
 @Configuration
 @MapperScan("**.mapper")
+@Import(DataPermissionHandlerImpl.class)
 public class MybatisPlusConfiguration {
 
 
@@ -42,6 +43,21 @@ public class MybatisPlusConfiguration {
         innerInterceptors.forEach(interceptor::addInnerInterceptor);
         interceptor.addInnerInterceptor(new PaginationInterceptor());
         return interceptor;
+    }
+
+    @Bean
+    public BaseDomainMetaObjectHandler baseDomainMetaObjectHandler() {
+        return new BaseDomainMetaObjectHandler();
+    }
+
+    @Bean
+    public DataPermissionParameterResolver tableMethodParameterResolver() {
+        return new TableMethodParameterResolver();
+    }
+
+    @Bean
+    public DataPermissionInterceptor dataPermissionInterceptor(MultiDataPermissionHandler dataPermissionHandler) {
+        return new DataPermissionInterceptor(dataPermissionHandler);
     }
 
 
@@ -78,32 +94,6 @@ public class MybatisPlusConfiguration {
         public PostOperationManager postOperationManager() {
             return new PostOperationManager();
         }
-    }
-
-    @Configuration
-    @ConditionalOnClass(SaTokenConfig.class)
-    public static class SecurityConfiguration {
-
-        @Bean
-        public BaseDomainMetaObjectHandler baseDomainMetaObjectHandler() {
-            return new BaseDomainMetaObjectHandler();
-        }
-
-        @Bean
-        public DataPermissionParameterResolver tableMethodParameterResolver() {
-            return new TableMethodParameterResolver();
-        }
-
-        @Bean
-        public DataPermissionInterceptor dataPermissionInterceptor() {
-            return new DataPermissionInterceptor(dataPermissionHandler());
-        }
-
-        @Bean
-        public MultiDataPermissionHandler dataPermissionHandler() {
-            return new DataPermissionHandlerImpl();
-        }
-
     }
 
 }

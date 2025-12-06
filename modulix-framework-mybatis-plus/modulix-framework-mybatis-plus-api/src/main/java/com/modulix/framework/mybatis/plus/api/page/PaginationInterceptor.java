@@ -38,13 +38,12 @@ public class PaginationInterceptor extends PaginationInnerInterceptor {
     @Override
     public boolean willDoQuery(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) throws SQLException {
         IgnoreStrategy ignoreStrategy = InterceptorIgnoreHelper.getIgnoreStrategy(ms.getId());
-        if (Objects.nonNull(ignoreStrategy) && Boolean.TRUE.equals(ignoreStrategy.getOthers().get(IGNORE_KEY)) && !PageContextHolder.getPageAble()) {
-            return false;
-        }
-        // 如果请求是分页请求，在这里通过注解构建Page对象，传递给上一层进行调用
-        if (!PageContextHolder.getPageAble()) {
+        if ((Objects.nonNull(ignoreStrategy) &&
+                Objects.nonNull(ignoreStrategy.getOthers()) &&
+                Boolean.TRUE.equals(ignoreStrategy.getOthers().get(IGNORE_KEY))) || !PageContextHolder.getPageAble()) {
             return super.willDoQuery(executor, ms, parameter, rowBounds, resultHandler, boundSql);
         }
+        // 如果请求是分页请求，在这里通过注解构建Page对象，传递给上一层进行调用
         // 构建分页参数
         Page<Object> page = PageContextHolder.getPageRequestInfo();
         parameter = buildPageParam(page, parameter);
@@ -81,7 +80,6 @@ public class PaginationInterceptor extends PaginationInnerInterceptor {
                 // 如果配置了注解，又在方法上使用了Page参数，那么以方法上的page参数为准
                 return parameterObject;
             }
-            // todo 还需要考虑参数类型是集合的情况
             Map<String, Object> params = new HashMap<>();
             ReflectionUtils.doWithFields(parameterObject.getClass(), field -> {
                 field.setAccessible(true);

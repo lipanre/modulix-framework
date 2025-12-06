@@ -1,7 +1,6 @@
 package com.modulix.framework.security.config;
 
 import cn.dev33.satoken.stp.StpUtil;
-import com.modulix.framework.mybatis.plus.api.enums.DataScope;
 import com.modulix.framework.security.api.SecurityUtil;
 import com.modulix.framework.security.api.common.HttpHeader;
 import com.modulix.framework.security.api.info.SecurityUser;
@@ -10,7 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import java.util.Set;
+import java.util.Collection;
 
 /**
  * security上下文拦截器
@@ -25,8 +24,8 @@ public class SecurityContextInitInterceptor implements HandlerInterceptor {
         if (StpUtil.isLogin()) {
             SecurityUser securityUser = new SecurityUser();
             securityUser.setUserId(StpUtil.getLoginIdAsLong());
-            securityUser.setDataScopes((Set<DataScope>) StpUtil.getExtra(SecurityUser.Fields.dataScopes));
-            securityUser.setRoleCodes((Set<String>) StpUtil.getExtra(SecurityUser.Fields.roleCodes));
+            securityUser.setDataScopes((Collection<String>) StpUtil.getExtra(SecurityUser.Fields.dataScopes));
+            securityUser.setRoleCodes((Collection<String>) StpUtil.getExtra(SecurityUser.Fields.roleCodes));
             securityUser.setClientType(request.getHeader(HttpHeader.CLIENT_TYPE));
             SecurityUtil.setCurrentUser(securityUser);
         }

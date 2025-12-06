@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.plugins.InterceptorIgnoreHelper;
 import com.baomidou.mybatisplus.extension.plugins.handler.MultiDataPermissionHandler;
 import com.google.common.collect.HashBasedTable;
 import com.modulix.framework.mybatis.plus.api.annotation.DataPermissionHandler;
-import com.modulix.framework.mybatis.plus.api.enums.DataScope;
 import com.modulix.framework.security.api.SecurityUtil;
 import jakarta.annotation.Resource;
 import lombok.NoArgsConstructor;
@@ -19,6 +18,8 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.AnnotatedElementUtils;
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -32,13 +33,14 @@ import java.util.Optional;
  * @author lipanre
  */
 @Slf4j
+@Component
 @NoArgsConstructor
 public class DataPermissionHandlerImpl implements MultiDataPermissionHandler, BeanPostProcessor {
 
     /**
      * 数据权限类型 + 表名 ==> 数据权限处理器定义
      */
-    private static final HashBasedTable<@NonNull DataScope, @NonNull String, @NonNull DataPermissionHandlerDefinition> dataPermissionTable = HashBasedTable.create();
+    private static final HashBasedTable<@NonNull String, @NonNull String, @NonNull DataPermissionHandlerDefinition> dataPermissionTable = HashBasedTable.create();
 
     @Resource
     private List<DataPermissionParameterResolver> parameterResolvers;
@@ -60,12 +62,14 @@ public class DataPermissionHandlerImpl implements MultiDataPermissionHandler, Be
             return null;
         }
         List<Expression> expressions = new ArrayList<>();
-        for (DataScope dataPermission : SecurityUtil.getCurrentDataScopes()) {
+        for (String dataPermission : SecurityUtil.getCurrentDataScopes()) {
             DataPermissionHandlerDefinition dataPermissionHandlerDefinition = dataPermissionTable.get(dataPermission, table.getName());
             if (Objects.isNull(dataPermissionHandlerDefinition)) continue;
             Expression expression = invokeHandler(dataPermissionHandlerDefinition, table);
+            if (Objects.isNull(expression)) continue;
             expressions.add(new ParenthesedExpressionList<>(expression));
         }
+        if (CollectionUtils.isEmpty(expressions)) return null;
         Optional<Expression> dataPermissionExpressionOpt = expressions.stream().reduce(OrExpression::new);
         // 如果数据权限没有构建任何表达式，则不添加任何过滤条件
         return dataPermissionExpressionOpt.map(ParenthesedExpressionList::new).orElse(null);

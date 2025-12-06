@@ -6,26 +6,26 @@ package com.modulix.framework.mybatis.plus.api.enums;
  * <br>
  * {@code date} 2025/3/4 12:11
  */
-public enum DataScope {
+public class DataScope {
 
     /**
      * 当前部门
      */
-    DEPT,
+    public static final String dept = "dept";
 
     /**
      * 当前部门及子部门
      */
-    DEPT_AND_CHILD,
+    public static final String deptAndChild = "dept_and_child";
 
     /**
      * 自定义
      */
-    CUSTOMIZE,
+    public static final String customize = "customize";
 
     /**
      * 仅本人
      */
-    SELF,
+    public static final String self = "self";
 
 }

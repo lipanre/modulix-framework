@@ -2,7 +2,6 @@ package com.modulix.framework.security.api;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.stp.parameter.SaLoginParameter;
-import com.modulix.framework.mybatis.plus.api.enums.DataScope;
 import com.modulix.framework.security.api.info.SecurityUser;
 
 import java.util.Set;
@@ -25,7 +24,7 @@ public interface SecurityService {
      *
      * @return 数据权限
      */
-    default Set<DataScope> getCurrentDataScopes() {
+    default Set<String> getCurrentDataScopes() {
         return getDataScopes(StpUtil.getLoginIdAsLong());
     }
 
@@ -35,7 +34,7 @@ public interface SecurityService {
      * @param userId 用户ID
      * @return 数据权限列表
      */
-    Set<DataScope> getDataScopes(Long userId);
+    Set<String> getDataScopes(Long userId);
 
     /**
      * 获取当前登录用户的角色编码列表

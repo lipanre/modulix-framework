@@ -1,6 +1,5 @@
 package com.modulix.framework.mybatis.plus.api.annotation;
 
-import com.modulix.framework.mybatis.plus.api.enums.DataScope;
 import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.*;
@@ -29,7 +28,7 @@ public @interface DataPermissionHandler {
      * @return 数据权限类型
      */
     @AliasFor("type")
-    DataScope value();
+    String value() default "";
 
     /**
      * 处理的数据权限类型
@@ -37,13 +36,13 @@ public @interface DataPermissionHandler {
      * @return 数据权限类型
      */
     @AliasFor("value")
-    DataScope type();
+    String type() default "";
 
     /**
      * 处理的数据库表名列表
      *
      * @return 数据库表名列表
      */
-    String[] tables();
+    String[] tables() default {};
 
 }

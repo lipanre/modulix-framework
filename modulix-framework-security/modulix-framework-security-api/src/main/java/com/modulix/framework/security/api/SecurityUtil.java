@@ -1,12 +1,11 @@
 package com.modulix.framework.security.api;
 
 import com.alibaba.ttl.TransmittableThreadLocal;
-import com.modulix.framework.mybatis.plus.api.enums.DataScope;
 import com.modulix.framework.security.api.common.RoleCode;
 import com.modulix.framework.security.api.info.SecurityUser;
 
+import java.util.Collection;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.Function;
 
 /**
@@ -92,7 +91,7 @@ public class SecurityUtil {
      *
      * @return 当前登录用户的数据权限列表
      */
-    public static Set<DataScope> getCurrentDataScopes() {
+    public static Collection<String> getCurrentDataScopes() {
         SecurityUser user = getCurrentUser();
         return user.getDataScopes();
     }
