@@ -68,5 +68,19 @@
     "fields": {
       "root": "org.springframework.context.ApplicationContext"
     }
-  }
+  },
+  "com.modulix.framework.mybatis.plus.api.annotation.DataPermissionHandler@condition": {
+    "prefix": "#{",
+    "suffix": "}",
+    "method": {
+      "result": false,
+      "resultName": "result",
+      "parameters": true,
+      "parametersPrefix": [
+      ]
+    },
+    "fields": {
+      "su": "com.modulix.framework.security.api.SecurityUtil"
+    }
+    }
 }

@@ -18,6 +18,15 @@ public interface SecurityService {
      */
     String BEAN_NAME_SUFFIX = "SecurityService";
 
+    /**
+     * 获取安全上下文服务Bean名称
+     *
+     * @param clientType 客户端类型
+     * @return 安全上下文服务Bean名称
+     */
+    static String getSecurityServiceName(String clientType) {
+        return clientType + SecurityService.BEAN_NAME_SUFFIX;
+    }
 
     /**
      * 获取当前用户的数据权限
@@ -65,5 +74,4 @@ public interface SecurityService {
         loginParameter.setExtra(SecurityUser.Fields.roleCodes, listRoleCode(userId));
         return loginParameter;
     }
-
 }

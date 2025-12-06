@@ -1,5 +1,6 @@
 package com.modulix.framework.security.config;
 
+import com.modulix.framework.security.api.common.HttpHeader;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
@@ -19,7 +20,7 @@ public class RequestInfoInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,@NonNull Object handler) throws Exception {
-        log.info("request url is: {}", request.getRequestURL());
+        log.info("request url is: {}, request uri is: {}, client-type = {}", request.getRequestURL(), request.getRequestURI(), request.getHeader(HttpHeader.CLIENT_TYPE));
         return true;
     }
 }

@@ -4,20 +4,18 @@ import cn.dev33.satoken.config.SaTokenConfig;
 import cn.dev33.satoken.stp.StpUtil;
 import com.modulix.framework.security.api.SecurityService;
 import com.modulix.framework.security.api.SecurityServiceFactory;
-import com.modulix.framework.security.api.common.HttpHeader;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import org.springframework.util.StringUtils;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 /**
  * 模拟登录拦截器
  *
  * @author lipanre
  */
-public class MockAuthInterceptor implements HandlerInterceptor {
+public class MockAuthInterceptor extends AbstractHandlerInterceptor {
 
     @Resource
     private SaTokenConfig saTokenConfig;
@@ -32,10 +30,9 @@ public class MockAuthInterceptor implements HandlerInterceptor {
     private SecurityServiceFactory securityServiceFactory;
 
     @Override
-    public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) throws Exception {
+    public boolean preHandle(SecurityService securityService, @NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) throws Exception {
         String token = request.getHeader(saTokenConfig.getTokenName());
         if (StringUtils.startsWithIgnoreCase(token, saTokenConfigProperties.getMockTokenPrefix())) {
-            SecurityService securityService = securityServiceFactory.getDefaultSecurityService(request.getHeader(HttpHeader.CLIENT_TYPE));
             Long userId = Long.parseLong(token.substring(saTokenConfigProperties.getMockTokenPrefix().length()));
             // 如果已经登录了,就直接创建一个登录会话数据,避免重复登录
             if (StpUtil.isLogin(userId)) {

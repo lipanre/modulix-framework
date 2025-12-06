@@ -45,4 +45,12 @@ public @interface DataPermissionHandler {
      */
     String[] tables() default {};
 
+    /**
+     * todo
+     * spel执行条件: spel表达式，返回true时才会执行数据权限处理 <br>
+     * 可使用参数: <br>
+     *  su: {@link com.modulix.framework.security.api.SecurityUtil}
+     */
+    String condition() default "true";
+
 }

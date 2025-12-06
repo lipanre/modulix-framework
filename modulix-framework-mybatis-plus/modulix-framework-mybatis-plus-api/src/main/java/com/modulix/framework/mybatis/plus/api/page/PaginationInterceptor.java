@@ -4,18 +4,22 @@ import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.plugins.IgnoreStrategy;
 import com.baomidou.mybatisplus.core.plugins.InterceptorIgnoreHelper;
+import com.baomidou.mybatisplus.core.toolkit.PluginUtils;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.mapping.ParameterMapping;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
+import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -30,6 +34,8 @@ public class PaginationInterceptor extends PaginationInnerInterceptor {
     private static final String IGNORE_KEY = "page";
 
     private static final String PARAMETER_NAME = "PAGE_PARAMETER_NAME";
+
+    private static final List<String> SINGLE_PARAMETER_NAMES = List.of("param1", "arg0");
 
     public PaginationInterceptor(DbType dbType) {
         super(dbType);
@@ -46,8 +52,11 @@ public class PaginationInterceptor extends PaginationInnerInterceptor {
         // 如果请求是分页请求，在这里通过注解构建Page对象，传递给上一层进行调用
         // 构建分页参数
         Page<Object> page = PageContextHolder.getPageRequestInfo();
-        parameter = buildPageParam(page, parameter);
-        return super.willDoQuery(executor, ms, parameter, rowBounds, resultHandler, boundSql);
+        parameter = buildPageParam(page, parameter, boundSql);
+        if (super.willDoQuery(executor, ms, parameter, rowBounds, resultHandler, boundSql)) {
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -59,7 +68,7 @@ public class PaginationInterceptor extends PaginationInnerInterceptor {
         }
         Page<Object> page = PageContextHolder.getPageRequestInfo();
         // 构建分页参数
-        parameter = buildPageParam(page, parameter);
+        parameter = buildPageParam(page, parameter, boundSql);
         super.beforeQuery(executor, ms, parameter, rowBounds, resultHandler, boundSql);
     }
 
@@ -71,7 +80,7 @@ public class PaginationInterceptor extends PaginationInnerInterceptor {
      * @return 分页参数
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public static Object buildPageParam(Page<Object> page, Object parameterObject) {
+    public static Object buildPageParam(Page<Object> page, Object parameterObject, BoundSql boundSql) {
         if (parameterObject != null) {
             if (parameterObject instanceof Map paramMap) {
                 paramMap.put(PARAMETER_NAME, page);
@@ -81,6 +90,15 @@ public class PaginationInterceptor extends PaginationInnerInterceptor {
                 return parameterObject;
             }
             Map<String, Object> params = new HashMap<>();
+
+            if (ClassUtils.isSimpleValueType(parameterObject.getClass())) {
+                params.put(PARAMETER_NAME, page);
+                List<ParameterMapping> parameterMappings = PluginUtils.mpBoundSql(boundSql).parameterMappings();
+                params.put(parameterMappings.getFirst().getProperty(), parameterObject);
+                SINGLE_PARAMETER_NAMES.forEach(name -> params.put(name, parameterObject));
+                return params;
+            }
+
             ReflectionUtils.doWithFields(parameterObject.getClass(), field -> {
                 field.setAccessible(true);
                 Object fieldValue = field.get(parameterObject);

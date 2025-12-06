@@ -77,7 +77,6 @@ commons-lang3 = { module = "org.apache.commons:commons-lang3", version.ref = "co
 commons-io = { module = "org.apache.commons:commons-io", version.ref = "commons-io-version" }
 commons-collections4 = { module = "org.apache.commons:commons-collections4", version.ref = "commons-collections4-version"}
 
-
 [bundles]
 
 [plugins]

@@ -12,6 +12,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -47,6 +48,16 @@ public class SaTokenAutoConfiguration implements WebMvcConfigurer {
         return new SecurityContextInitInterceptor();
     }
 
+    /**
+     * 不需要认证的url列表
+     *
+     * @return 不需要认证的url列表
+     */
+    @Bean
+    public List<String> excludeAuthUrls() {
+        return Objects.nonNull(saTokenConfigProperties.getIgnoreAuthUrls()) ? saTokenConfigProperties.getIgnoreAuthUrls() : Collections.emptyList();
+    }
+
 
     /**
      * 默认所有接口都需要认证之后才能走下去
@@ -58,8 +69,7 @@ public class SaTokenAutoConfiguration implements WebMvcConfigurer {
         registry.addInterceptor(new RequestInfoInterceptor());
         registry.addInterceptor(mockAuthInterceptor());
         registry.addInterceptor(new SaInterceptor(handler -> StpUtil.checkLogin()))
-                .excludePathPatterns(Objects.nonNull(saTokenConfigProperties.getIgnoreAuthUrls()) ?
-                        saTokenConfigProperties.getIgnoreAuthUrls() : Collections.emptyList())
+                .excludePathPatterns(excludeAuthUrls())
                 .addPathPatterns("/**");
         registry.addInterceptor(securityContextInitInterceptor());
     }

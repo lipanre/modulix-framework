@@ -57,10 +57,9 @@ public class DataPermissionHandlerImpl implements MultiDataPermissionHandler, Be
             return null;
         }
 
-        IgnoreStrategy ignoreStrategy = InterceptorIgnoreHelper.getIgnoreStrategy(mappedStatementId);
-        if (Objects.nonNull(ignoreStrategy) && ignoreStrategy.getDataPermission()) {
-            return null;
-        }
+
+        if (isIgnore(mappedStatementId)) return null;
+
         List<Expression> expressions = new ArrayList<>();
         for (String dataPermission : SecurityUtil.getCurrentDataScopes()) {
             DataPermissionHandlerDefinition dataPermissionHandlerDefinition = dataPermissionTable.get(dataPermission, table.getName());
@@ -73,6 +72,19 @@ public class DataPermissionHandlerImpl implements MultiDataPermissionHandler, Be
         Optional<Expression> dataPermissionExpressionOpt = expressions.stream().reduce(OrExpression::new);
         // 如果数据权限没有构建任何表达式，则不添加任何过滤条件
         return dataPermissionExpressionOpt.map(ParenthesedExpressionList::new).orElse(null);
+    }
+
+    private static boolean isIgnore(String mappedStatementId) {
+        IgnoreStrategy ignoreStrategy = InterceptorIgnoreHelper.getIgnoreStrategy(mappedStatementId);
+
+        // 判断方法上是否有忽略注解
+        if (Objects.nonNull(ignoreStrategy) && ignoreStrategy.getDataPermission()) {
+            return true;
+        }
+
+        // 判断类上是否有忽略注解
+        IgnoreStrategy classStrategy = InterceptorIgnoreHelper.getIgnoreStrategy(mappedStatementId.substring(0, mappedStatementId.lastIndexOf(".")));
+        return Objects.nonNull(classStrategy) && classStrategy.getDataPermission();
     }
 
     private Expression invokeHandler(DataPermissionHandlerDefinition dataPermissionHandlerDefinition, Table table) {
