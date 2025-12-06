@@ -2,6 +2,7 @@ package com.modulix.framework.mybatis.plus.permission;
 
 import com.baomidou.mybatisplus.core.plugins.IgnoreStrategy;
 import com.baomidou.mybatisplus.core.plugins.InterceptorIgnoreHelper;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.handler.MultiDataPermissionHandler;
 import com.google.common.collect.HashBasedTable;
 import com.modulix.framework.mybatis.plus.api.annotation.DataPermissionHandler;
@@ -42,6 +43,8 @@ public class DataPermissionHandlerImpl implements MultiDataPermissionHandler, Be
      */
     private static final HashBasedTable<@NonNull String, @NonNull String, @NonNull DataPermissionHandlerDefinition> dataPermissionTable = HashBasedTable.create();
 
+    private static final HashBasedTable<@NonNull String, @NonNull String, @NonNull List<String>> dataPermissionConditions = HashBasedTable.create();
+
     @Resource
     private List<DataPermissionParameterResolver> parameterResolvers;
 
@@ -64,6 +67,8 @@ public class DataPermissionHandlerImpl implements MultiDataPermissionHandler, Be
         for (String dataPermission : SecurityUtil.getCurrentDataScopes()) {
             DataPermissionHandlerDefinition dataPermissionHandlerDefinition = dataPermissionTable.get(dataPermission, table.getName());
             if (Objects.isNull(dataPermissionHandlerDefinition)) continue;
+            // 循环条件, 然后构建符合条件的表达式
+
             Expression expression = invokeHandler(dataPermissionHandlerDefinition, table);
             if (Objects.isNull(expression)) continue;
             expressions.add(new ParenthesedExpressionList<>(expression));
@@ -83,7 +88,7 @@ public class DataPermissionHandlerImpl implements MultiDataPermissionHandler, Be
         }
 
         // 判断类上是否有忽略注解
-        IgnoreStrategy classStrategy = InterceptorIgnoreHelper.getIgnoreStrategy(mappedStatementId.substring(0, mappedStatementId.lastIndexOf(".")));
+        IgnoreStrategy classStrategy = InterceptorIgnoreHelper.getIgnoreStrategy(mappedStatementId.substring(0, mappedStatementId.lastIndexOf(Constants.DOT)));
         return Objects.nonNull(classStrategy) && classStrategy.getDataPermission();
     }
 
@@ -128,6 +133,13 @@ public class DataPermissionHandlerImpl implements MultiDataPermissionHandler, Be
             DataPermissionHandlerDefinition dataPermissionHandlerDefinition = createDefinition(bean, method);
             for (String tableName : dataPermissionHandler.tables()) {
                 dataPermissionTable.put(dataPermissionHandler.type(), tableName, dataPermissionHandlerDefinition);
+
+                List<String> conditions = dataPermissionConditions.get(dataPermissionHandler.type(), tableName);
+                if (Objects.isNull(conditions)) {
+                    conditions = new ArrayList<>();
+                }
+                conditions.add(dataPermissionHandler.condition());
+                dataPermissionConditions.put(dataPermissionHandler.type(), tableName, conditions);
             }
         }
         return BeanPostProcessor.super.postProcessAfterInitialization(bean, beanName);

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.plugins.IgnoreStrategy;
 import com.baomidou.mybatisplus.core.plugins.InterceptorIgnoreHelper;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.core.toolkit.PluginUtils;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -43,10 +44,8 @@ public class PaginationInterceptor extends PaginationInnerInterceptor {
 
     @Override
     public boolean willDoQuery(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) throws SQLException {
-        IgnoreStrategy ignoreStrategy = InterceptorIgnoreHelper.getIgnoreStrategy(ms.getId());
-        if ((Objects.nonNull(ignoreStrategy) &&
-                Objects.nonNull(ignoreStrategy.getOthers()) &&
-                Boolean.TRUE.equals(ignoreStrategy.getOthers().get(IGNORE_KEY))) || !PageContextHolder.getPageAble()) {
+
+        if (ignorePage(ms) || !PageContextHolder.getPageAble()) {
             return super.willDoQuery(executor, ms, parameter, rowBounds, resultHandler, boundSql);
         }
         // 如果请求是分页请求，在这里通过注解构建Page对象，传递给上一层进行调用
@@ -57,6 +56,14 @@ public class PaginationInterceptor extends PaginationInnerInterceptor {
             return true;
         }
         return false;
+    }
+
+    private boolean ignorePage(MappedStatement ms) throws SQLException {
+        IgnoreStrategy ignoreStrategy = InterceptorIgnoreHelper.getIgnoreStrategy(ms.getId());
+        if (Objects.isNull(ignoreStrategy)) {
+            ignoreStrategy = InterceptorIgnoreHelper.getIgnoreStrategy(ms.getId().substring(0, ms.getId().lastIndexOf(Constants.DOT)));
+        }
+        return Objects.nonNull(ignoreStrategy) && Objects.nonNull(ignoreStrategy.getOthers()) && Boolean.TRUE.equals(ignoreStrategy.getOthers().get(IGNORE_KEY));
     }
 
     @Override
