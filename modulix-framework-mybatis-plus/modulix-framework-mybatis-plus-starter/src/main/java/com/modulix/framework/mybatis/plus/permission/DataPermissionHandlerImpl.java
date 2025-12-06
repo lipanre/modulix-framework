@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.plugins.InterceptorIgnoreHelper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.handler.MultiDataPermissionHandler;
 import com.google.common.collect.HashBasedTable;
+import com.modulix.framework.common.core.util.SpelUtil;
 import com.modulix.framework.mybatis.plus.api.annotation.DataPermissionHandler;
 import com.modulix.framework.security.api.SecurityUtil;
 import jakarta.annotation.Resource;
@@ -15,18 +16,19 @@ import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.operators.conditional.OrExpression;
 import net.sf.jsqlparser.expression.operators.relational.ParenthesedExpressionList;
 import net.sf.jsqlparser.schema.Table;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 数据权限处理器
@@ -36,17 +38,40 @@ import java.util.Optional;
 @Slf4j
 @Component
 @NoArgsConstructor
-public class DataPermissionHandlerImpl implements MultiDataPermissionHandler, BeanPostProcessor {
+public class DataPermissionHandlerImpl implements MultiDataPermissionHandler, BeanPostProcessor, ApplicationContextAware {
+
+    /**
+     * 数据权限类型 + 表名  ==>  条件 ==> 数据权限处理器定义
+     */
+    private static final HashBasedTable<@NonNull Pair<String, String>, @NonNull String, @NonNull DataPermissionHandlerDefinition> dataPermissionMapping = HashBasedTable.create();
 
     /**
      * 数据权限类型 + 表名 ==> 数据权限处理器定义
      */
     private static final HashBasedTable<@NonNull String, @NonNull String, @NonNull DataPermissionHandlerDefinition> dataPermissionTable = HashBasedTable.create();
 
-    private static final HashBasedTable<@NonNull String, @NonNull String, @NonNull List<String>> dataPermissionConditions = HashBasedTable.create();
-
     @Resource
     private List<DataPermissionParameterResolver> parameterResolvers;
+
+    private static final Map<String, Object> spelVariables = new HashMap<>();
+
+    private static ApplicationContext context;
+
+    private static final class SpelVariable {
+
+        /**
+         * 安全工具类
+         * 可以通过 #{su} 来调用安全工具类的方法
+         * 例如：#{su.getCurrentUser()}
+         * {@link SecurityUtil}
+         */
+        public static final String SU = "su";
+
+    }
+
+    static {
+        initSpelVariables();
+    }
 
 
     @SuppressWarnings("unchecked")
@@ -56,22 +81,31 @@ public class DataPermissionHandlerImpl implements MultiDataPermissionHandler, Be
         // 判断指定类型的数据权限是否需要对指定的表进行数据权限过滤
         // 如果需要过滤则通过DataPermissionHandlerDefinition来构建OR表达式
         // 如果没有登录就不走权限过滤逻辑
-        if (!SecurityUtil.isLogin() || SecurityUtil.isSuperAdmin() || SecurityUtil.isAdmin() || Objects.isNull(SecurityUtil.getCurrentDataScopes())) {
+        if (!SecurityUtil.isLogin() ||
+                isIgnore(mappedStatementId) ||
+                SecurityUtil.isSuperAdmin() ||
+                SecurityUtil.isAdmin() ||
+                Objects.isNull(SecurityUtil.getCurrentDataScopes())) {
             return null;
         }
 
-
-        if (isIgnore(mappedStatementId)) return null;
-
-        List<Expression> expressions = new ArrayList<>();
+        List<Expression> expressions = new CopyOnWriteArrayList<>();
         for (String dataPermission : SecurityUtil.getCurrentDataScopes()) {
-            DataPermissionHandlerDefinition dataPermissionHandlerDefinition = dataPermissionTable.get(dataPermission, table.getName());
-            if (Objects.isNull(dataPermissionHandlerDefinition)) continue;
-            // 循环条件, 然后构建符合条件的表达式
-
-            Expression expression = invokeHandler(dataPermissionHandlerDefinition, table);
-            if (Objects.isNull(expression)) continue;
-            expressions.add(new ParenthesedExpressionList<>(expression));
+            Pair<String, String> permissionTablePair = Pair.of(dataPermission, table.getName());
+            if (!dataPermissionMapping.containsRow(permissionTablePair)) {
+                continue;
+            }
+            dataPermissionMapping.row(permissionTablePair).entrySet().parallelStream()
+                    .forEach(entry -> {
+                        String condition = entry.getKey();
+                        DataPermissionHandlerDefinition handler = entry.getValue();
+                        if (SpelUtil.getValue(condition, Boolean.class, context, spelVariables)) {
+                            // 循环条件, 然后构建符合条件的表达式
+                            Expression expression = invokeHandler(handler, table);
+                            if (Objects.isNull(expression)) return;
+                            expressions.add(new ParenthesedExpressionList<>(expression));
+                        }
+                    });
         }
         if (CollectionUtils.isEmpty(expressions)) return null;
         Optional<Expression> dataPermissionExpressionOpt = expressions.stream().reduce(OrExpression::new);
@@ -132,14 +166,10 @@ public class DataPermissionHandlerImpl implements MultiDataPermissionHandler, Be
             if (Objects.isNull(dataPermissionHandler)) continue;
             DataPermissionHandlerDefinition dataPermissionHandlerDefinition = createDefinition(bean, method);
             for (String tableName : dataPermissionHandler.tables()) {
-                dataPermissionTable.put(dataPermissionHandler.type(), tableName, dataPermissionHandlerDefinition);
+                Pair<String, String> permissionTablePair = Pair.of(dataPermissionHandler.type(), tableName);
+                dataPermissionMapping.put(permissionTablePair, dataPermissionHandler.condition(), dataPermissionHandlerDefinition);
 
-                List<String> conditions = dataPermissionConditions.get(dataPermissionHandler.type(), tableName);
-                if (Objects.isNull(conditions)) {
-                    conditions = new ArrayList<>();
-                }
-                conditions.add(dataPermissionHandler.condition());
-                dataPermissionConditions.put(dataPermissionHandler.type(), tableName, conditions);
+                // dataPermissionTable.put(dataPermissionHandler.type(), tableName, dataPermissionHandlerDefinition);
             }
         }
         return BeanPostProcessor.super.postProcessAfterInitialization(bean, beanName);
@@ -151,5 +181,17 @@ public class DataPermissionHandlerImpl implements MultiDataPermissionHandler, Be
             parameters[i] = new MethodParameter(method, i);
         }
         return new DataPermissionHandlerDefinition(bean, method, parameters);
+    }
+
+    @Override
+    public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
+        context = applicationContext;
+    }
+
+    /**
+     * 初始化Spel变量
+     */
+    public static void initSpelVariables() {
+        spelVariables.put(SpelVariable.SU, SecurityUtil.class);
     }
 }

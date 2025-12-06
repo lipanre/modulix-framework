@@ -80,7 +80,8 @@
       ]
     },
     "fields": {
-      "su": "com.modulix.framework.security.api.SecurityUtil"
+      "su": "com.modulix.framework.security.api.SecurityUtil",
+      "root": "org.springframework.context.ApplicationContext"
     }
     }
 }
