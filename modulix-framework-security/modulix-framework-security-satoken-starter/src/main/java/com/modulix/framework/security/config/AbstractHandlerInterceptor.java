@@ -11,6 +11,8 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import java.util.Objects;
+
 /**
  * 抽象处理器拦截器
  *
@@ -33,6 +35,9 @@ public abstract class AbstractHandlerInterceptor implements HandlerInterceptor {
         }
 
         String clientType = request.getHeader(HttpHeader.CLIENT_TYPE);
+        if (Objects.isNull(clientType)) {
+            throw new RuntimeException("缺少client-type信息");
+        }
         String serviceName = SecurityService.getSecurityServiceName(clientType);
 
         // 当前安全上下文service对象
