@@ -31,7 +31,7 @@ import java.time.format.DateTimeFormatter;
  * @author lipanre
  */
 @Configuration
-@EnableConfigurationProperties(JacksonConfigProperties.class)
+@EnableConfigurationProperties(TimeConfigProperties.class)
 public class WebConfiguration {
 
     @Bean
@@ -69,12 +69,12 @@ public class WebConfiguration {
     }
 
     @Bean
-    public JavaTimeModule javaTimeModule(JacksonConfigProperties jacksonConfigProperties) {
+    public JavaTimeModule javaTimeModule(TimeConfigProperties timeConfigProperties) {
         JavaTimeModule javaTimeModule = new JavaTimeModule();
 
-        DateTimeFormatter localDateTimeFormatter = DateTimeFormatter.ofPattern(jacksonConfigProperties.getLocalDateTimePattern());
-        DateTimeFormatter localDateFormatter = DateTimeFormatter.ofPattern(jacksonConfigProperties.getLocalDatePattern());
-        DateTimeFormatter localTimeFormatter = DateTimeFormatter.ofPattern(jacksonConfigProperties.getLocalTimePattern());
+        DateTimeFormatter localDateTimeFormatter = DateTimeFormatter.ofPattern(timeConfigProperties.getLocalDateTimePattern());
+        DateTimeFormatter localDateFormatter = DateTimeFormatter.ofPattern(timeConfigProperties.getLocalDatePattern());
+        DateTimeFormatter localTimeFormatter = DateTimeFormatter.ofPattern(timeConfigProperties.getLocalTimePattern());
 
         // LocalDateTime
         javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(localDateTimeFormatter));

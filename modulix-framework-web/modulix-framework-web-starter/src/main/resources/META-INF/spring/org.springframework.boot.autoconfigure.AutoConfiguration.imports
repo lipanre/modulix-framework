@@ -1,3 +1,4 @@
 com.modulix.framework.web.service.impl.HttpServiceImpl
 com.modulix.framework.web.filter.RepeatReadableRequestFilter
 com.modulix.framework.web.config.WebConfiguration
+com.modulix.framework.web.config.DateConverterConfig
