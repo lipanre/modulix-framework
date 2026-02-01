@@ -6,7 +6,7 @@ plugins {
 
 allprojects {
     group = "io.github.lipanre"
-    version = "0.0.26"
+    version = "0.0.27"
 
     tasks.withType<JavaCompile> {
         options.compilerArgs.add("-parameters")

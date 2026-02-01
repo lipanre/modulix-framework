@@ -4,18 +4,22 @@ import cn.dev33.satoken.config.SaTokenConfig;
 import cn.dev33.satoken.stp.StpUtil;
 import com.modulix.framework.security.api.SecurityService;
 import com.modulix.framework.security.api.SecurityServiceFactory;
+import com.modulix.framework.security.api.common.HttpHeader;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import org.springframework.util.StringUtils;
+import org.springframework.web.servlet.HandlerInterceptor;
+
+import java.util.Objects;
 
 /**
  * 模拟登录拦截器
  *
  * @author lipanre
  */
-public class MockAuthInterceptor extends AbstractHandlerInterceptor {
+public class MockAuthInterceptor implements HandlerInterceptor {
 
     @Resource
     private SaTokenConfig saTokenConfig;
@@ -30,7 +34,16 @@ public class MockAuthInterceptor extends AbstractHandlerInterceptor {
     private SecurityServiceFactory securityServiceFactory;
 
     @Override
-    public boolean preHandle(SecurityService securityService, @NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) throws Exception {
+    public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) throws Exception {
+
+        String clientType = request.getHeader(HttpHeader.CLIENT_TYPE);
+        if (Objects.isNull(clientType)) {
+            throw new RuntimeException("缺少client-type信息");
+        }
+        String serviceName = SecurityService.getSecurityServiceName(clientType);
+
+        // 当前安全上下文service对象
+        SecurityService securityService = securityServiceFactory.getSecurityService(serviceName);
         String token = request.getHeader(saTokenConfig.getTokenName());
         if (StringUtils.startsWithIgnoreCase(token, saTokenConfigProperties.getMockTokenPrefix())) {
             Long userId = Long.parseLong(token.substring(saTokenConfigProperties.getMockTokenPrefix().length()));

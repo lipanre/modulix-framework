@@ -3,6 +3,7 @@ package com.modulix.framework.security.config;
 import cn.dev33.satoken.stp.StpUtil;
 import com.modulix.framework.security.api.SecurityService;
 import com.modulix.framework.security.api.SecurityServiceFactory;
+import com.modulix.framework.security.api.SecurityUtil;
 import com.modulix.framework.security.api.common.HttpHeader;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,6 +32,7 @@ public abstract class AbstractHandlerInterceptor implements HandlerInterceptor {
 
         // 如果已经登录才有下面的操作, 如果没有登录则不应该进行下面的操作
         if (!StpUtil.isLogin()) {
+            SecurityUtil.clearCurrentUser();
             return true;
         }
 
