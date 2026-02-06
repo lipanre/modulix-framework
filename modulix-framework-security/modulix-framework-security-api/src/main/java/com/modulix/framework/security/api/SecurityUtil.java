@@ -1,5 +1,6 @@
 package com.modulix.framework.security.api;
 
+import com.alibaba.ttl.TransmittableThreadLocal;
 import com.modulix.framework.security.api.common.RoleCode;
 import com.modulix.framework.security.api.info.SecurityUser;
 
@@ -14,7 +15,7 @@ import java.util.function.Function;
  */
 public class SecurityUtil {
 
-    private static final ThreadLocal<SecurityUser> currentUser = new ThreadLocal<>();
+    private static final TransmittableThreadLocal<SecurityUser> currentUser = new TransmittableThreadLocal<>();
 
 
     /**
