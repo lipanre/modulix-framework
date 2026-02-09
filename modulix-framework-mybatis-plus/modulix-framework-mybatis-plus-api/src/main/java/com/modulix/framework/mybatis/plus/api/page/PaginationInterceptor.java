@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.core.toolkit.PluginUtils;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -45,7 +46,7 @@ public class PaginationInterceptor extends PaginationInnerInterceptor {
     @Override
     public boolean willDoQuery(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) throws SQLException {
 
-        if (ignorePage(ms) || !PageContextHolder.getPageAble()) {
+        if (ignorePage(ms) || !PageContextHolder.getPageAble(ms.getId())) {
             return super.willDoQuery(executor, ms, parameter, rowBounds, resultHandler, boundSql);
         }
         // 如果请求是分页请求，在这里通过注解构建Page对象，传递给上一层进行调用
@@ -66,10 +67,11 @@ public class PaginationInterceptor extends PaginationInnerInterceptor {
         return Objects.nonNull(ignoreStrategy) && Objects.nonNull(ignoreStrategy.getOthers()) && Boolean.TRUE.equals(ignoreStrategy.getOthers().get(IGNORE_KEY));
     }
 
+    @SneakyThrows
     @Override
     public void beforeQuery(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
         // 如果请求是分页请求，在这里通过注解构建Page对象，传递给上一层进行调用
-        if (!PageContextHolder.getPageAble()) {
+        if (ignorePage(ms) || !PageContextHolder.getPageAble(ms.getId())) {
             super.beforeQuery(executor, ms, parameter, rowBounds, resultHandler, boundSql);
             return;
         }

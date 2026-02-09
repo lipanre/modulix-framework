@@ -12,6 +12,7 @@ import lombok.SneakyThrows;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -84,7 +85,10 @@ public class PageRequestAspect {
     @Around("@annotation(pageStatement)")
     public Object pageStatementAround(ProceedingJoinPoint pjp, PageStatement pageStatement) throws Throwable {
         try {
-            PageContextHolder.setPageAble(Objects.nonNull(PageContextHolder.getPageRequestInfo()));
+            MethodSignature signature = (MethodSignature) pjp.getSignature();
+            String simpleClassName = signature.getDeclaringType().getSimpleName();
+            String methodName = signature.getName();
+            PageContextHolder.setPageAble(simpleClassName + "." + methodName);
             return pjp.proceed();
         } finally {
             // 移除缓存
