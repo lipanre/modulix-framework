@@ -86,9 +86,9 @@ public class PageRequestAspect {
     public Object pageStatementAround(ProceedingJoinPoint pjp, PageStatement pageStatement) throws Throwable {
         try {
             MethodSignature signature = (MethodSignature) pjp.getSignature();
-            String simpleClassName = signature.getDeclaringType().getSimpleName();
+            String className = signature.getDeclaringType().getName();
             String methodName = signature.getName();
-            PageContextHolder.setPageAble(simpleClassName + "." + methodName);
+            PageContextHolder.setPageAble(className + "." + methodName);
             return pjp.proceed();
         } finally {
             // 移除缓存
