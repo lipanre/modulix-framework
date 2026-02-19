@@ -95,17 +95,14 @@ public class DataPermissionHandlerImpl implements MultiDataPermissionHandler, Be
             if (!dataPermissionMapping.containsRow(permissionTablePair)) {
                 continue;
             }
-            dataPermissionMapping.row(permissionTablePair).entrySet().parallelStream()
-                    .forEach(entry -> {
-                        String condition = entry.getKey();
-                        DataPermissionHandlerDefinition handler = entry.getValue();
-                        if (SpelUtil.getValue(condition, Boolean.class, context, spelVariables)) {
-                            // 循环条件, 然后构建符合条件的表达式
-                            Expression expression = invokeHandler(handler, table);
-                            if (Objects.isNull(expression)) return;
-                            expressions.add(new ParenthesedExpressionList<>(expression));
-                        }
-                    });
+            dataPermissionMapping.row(permissionTablePair).forEach((condition, handler) -> {
+                if (SpelUtil.getValue(condition, Boolean.class, context, spelVariables)) {
+                    // 循环条件, 然后构建符合条件的表达式
+                    Expression expression = invokeHandler(handler, table);
+                    if (Objects.isNull(expression)) return;
+                    expressions.add(new ParenthesedExpressionList<>(expression));
+                }
+            });
         }
         if (CollectionUtils.isEmpty(expressions)) return null;
         Optional<Expression> dataPermissionExpressionOpt = expressions.stream().reduce(OrExpression::new);
