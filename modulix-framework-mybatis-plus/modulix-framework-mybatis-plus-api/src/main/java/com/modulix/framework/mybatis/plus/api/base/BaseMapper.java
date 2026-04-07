@@ -69,6 +69,19 @@ public interface BaseMapper<T extends BaseDomain> extends MPJBaseMapper<T> {
     }
 
     /**
+     * 通过id查询单个字段值
+     *
+     * @param id             实体ID
+     * @param columnFunction 字段映射函数
+     * @param <R>            字段类型
+     * @return 字段值
+     */
+    default <R> R selectColumn(Long id, Function<T, R> columnFunction) {
+        T result = selectById(id);
+        return Objects.isNull(result) ? null : columnFunction.apply(result);
+    }
+
+    /**
      * 查询单条数据的单个字段
      * <p>
      *
