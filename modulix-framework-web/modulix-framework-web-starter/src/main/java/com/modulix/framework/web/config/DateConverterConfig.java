@@ -6,16 +6,18 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import lombok.NonNull;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -37,7 +39,7 @@ public class DateConverterConfig {
 
         @Override
         public LocalDate convert(@NonNull String pattern) {
-            if (StringUtils.isEmpty(pattern)) {
+            if (!StringUtils.hasText(pattern)) {
                 return null;
             }
             return LocalDate.parse(pattern, timeConfigProperties.getLocalDateFormat());
@@ -55,7 +57,7 @@ public class DateConverterConfig {
 
         @Override
         public LocalDateTime convert(@NonNull String pattern) {
-            if (StringUtils.isEmpty(pattern)) {
+            if (!StringUtils.hasText(pattern)) {
                 return null;
             }
             return LocalDateTime.parse(pattern, timeConfigProperties.getLocalDateTimeFormat());
@@ -71,13 +73,20 @@ public class DateConverterConfig {
         @Resource
         private TimeConfigProperties timeConfigProperties;
 
+        private DateFormat dateFormat;
+
+        @PostConstruct
+        public void init() {
+            dateFormat = new SimpleDateFormat(timeConfigProperties.getDatePattern());
+        }
+
         @Override
         public Date convert(@NonNull String pattern) {
-            if (StringUtils.isEmpty(pattern)) {
+            if (!StringUtils.hasText(pattern)) {
                 return null;
             }
             try {
-                return DateUtils.parseDate(pattern, timeConfigProperties.getDatePattern());
+                return dateFormat.parse(pattern);
             } catch (ParseException e) {
                 throw new RuntimeException(e);
             }
@@ -95,7 +104,7 @@ public class DateConverterConfig {
 
         @Override
         public LocalDateTime deserialize(JsonParser p, DeserializationContext deserializationContext) throws IOException {
-            if (StringUtils.isEmpty(p.getValueAsString())) {
+            if (!StringUtils.hasText(p.getValueAsString())) {
                 return null;
             }
             return LocalDateTime.parse(p.getValueAsString(), timeConfigProperties.getLocalDateTimeFormat());
@@ -131,7 +140,7 @@ public class DateConverterConfig {
 
         @Override
         public LocalDate deserialize(JsonParser p, DeserializationContext deserializationContext) throws IOException {
-            if (StringUtils.isEmpty(p.getValueAsString())) {
+            if (!StringUtils.hasText(p.getValueAsString())) {
                 return null;
             }
             return LocalDate.parse(p.getValueAsString(), timeConfigProperties.getLocalDateTimeFormat());
@@ -186,7 +195,7 @@ public class DateConverterConfig {
 
         @Override
         public LocalTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-            if (StringUtils.isEmpty(jsonParser.getValueAsString())) {
+            if (!StringUtils.hasText(jsonParser.getValueAsString())) {
                 return null;
             }
             return LocalTime.parse(jsonParser.getValueAsString(), timeConfigProperties.getLocalTimeFormat());

@@ -6,7 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.exception.ExceptionUtils;
+
+import java.util.Objects;
 
 /**
  * 通用响应类
@@ -94,7 +95,7 @@ public class Response<T> {
      */
     public static <T> Response<T> fail(int code, String message, Throwable exception) {
         log.error("系统异常", exception);
-        return new Response<>(code, null, message, ExceptionUtils.getStackTrace(exception));
+        return new Response<>(code, null, message, Objects.nonNull(exception) ? exception.getMessage() : null);
     }
 
 

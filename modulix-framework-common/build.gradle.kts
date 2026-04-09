@@ -9,10 +9,6 @@ plugins {
 
 
 dependencies {
-    api(platform(libs.mybatis.plus.bom))
-    api(libs.commons.lang3)
-    api(libs.guava)
     api(libs.jackson.databind)
     compileOnly(libs.spring.expression)
-    compileOnly(libs.mybatis.plus.annotation)
 }

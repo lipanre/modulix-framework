@@ -1,6 +1,5 @@
 package com.modulix.framework.security.config;
 
-import com.modulix.framework.common.core.util.JsonUtil;
 import com.modulix.framework.security.api.SecurityUtil;
 import com.modulix.framework.security.api.common.HttpHeader;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,7 +22,7 @@ public class RequestInfoInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,@NonNull Object handler) throws Exception {
         log.info("request url is: {}, request uri is: {}, client-type = {}, security-user = {}", request.getRequestURL(),
-                request.getRequestURI(), request.getHeader(HttpHeader.CLIENT_TYPE), JsonUtil.toJson(SecurityUtil.getCurrentUser()));
+                request.getRequestURI(), request.getHeader(HttpHeader.CLIENT_TYPE), SecurityUtil.getCurrentUser());
         return true;
     }
 }

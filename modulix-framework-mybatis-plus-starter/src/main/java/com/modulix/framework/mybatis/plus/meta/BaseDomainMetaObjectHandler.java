@@ -1,0 +1,34 @@
+package com.modulix.framework.mybatis.plus.meta;
+
+import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import com.modulix.framework.mybatis.plus.base.BaseDomain;
+import com.modulix.framework.security.api.SecurityUtil;
+import com.modulix.framework.security.api.info.SecurityUser;
+import org.apache.ibatis.reflection.MetaObject;
+
+import java.time.LocalDateTime;
+
+/**
+ * 实体类基本字段处理器
+ *
+ * <br>
+ * {@code date} 2025/2/17 12:06
+ */
+public class BaseDomainMetaObjectHandler implements MetaObjectHandler {
+
+    @Override
+    public void insertFill(MetaObject metaObject) {
+        if (SecurityUtil.isLogin()) {
+            this.strictInsertFill(metaObject, BaseDomain.Fields.creatorId, Long.class, SecurityUtil.getUserInfo(SecurityUser::getUserId));
+        }
+        this.strictInsertFill(metaObject, BaseDomain.Fields.createTime, LocalDateTime.class, LocalDateTime.now());
+    }
+
+    @Override
+    public void updateFill(MetaObject metaObject) {
+        if (SecurityUtil.isLogin()) {
+            this.strictUpdateFill(metaObject, BaseDomain.Fields.modifierId, Long.class, SecurityUtil.getUserInfo(SecurityUser::getUserId));
+        }
+        this.strictUpdateFill(metaObject, BaseDomain.Fields.modifyTime, LocalDateTime.class, LocalDateTime.now());
+    }
+}

@@ -7,8 +7,6 @@ plugins {
 
 
 dependencies {
-    implementation(project(":modulix-framework-mybatis-plus:modulix-framework-mybatis-plus-api"))
     implementation(libs.sa.token.core)
-    implementation(libs.ttl)
     implementation(libs.spring.boot.starter)
 }
