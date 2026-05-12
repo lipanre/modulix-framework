@@ -32,7 +32,7 @@ public abstract class AbstractHandlerInterceptor implements HandlerInterceptor {
 
         // 如果已经登录才有下面的操作, 如果没有登录则不应该进行下面的操作
         if (!StpUtil.isLogin()) {
-            SecurityUtil.clearCurrentUser();
+            SecurityUtil.clearUser();
             return true;
         }
 

@@ -84,7 +84,6 @@ public class DataPermissionHandlerImpl implements MultiDataPermissionHandler, Be
         if (!SecurityUtil.isLogin() ||
                 isIgnore(mappedStatementId) ||
                 SecurityUtil.isSuperAdmin() ||
-                SecurityUtil.isAdmin() ||
                 Objects.isNull(SecurityUtil.getCurrentDataScopes())) {
             return null;
         }

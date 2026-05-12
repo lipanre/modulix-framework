@@ -48,6 +48,11 @@ public class SaTokenAutoConfiguration implements WebMvcConfigurer {
         return new SecurityContextInitInterceptor();
     }
 
+    @Bean
+    public RequestInfoInterceptor requestInfoInterceptor() {
+        return new RequestInfoInterceptor();
+    }
+
     /**
      * 不需要认证的url列表
      *
@@ -66,7 +71,7 @@ public class SaTokenAutoConfiguration implements WebMvcConfigurer {
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new RequestInfoInterceptor());
+        registry.addInterceptor(requestInfoInterceptor());
         registry.addInterceptor(mockAuthInterceptor());
         registry.addInterceptor(new SaInterceptor(handler -> StpUtil.checkLogin()))
                 .excludePathPatterns(excludeAuthUrls())

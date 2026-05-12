@@ -23,6 +23,7 @@ public class SecurityContextInitInterceptor extends AbstractHandlerInterceptor {
         securityUser.setDataScopes(securityService.getCurrentDataScopes());
         securityUser.setRoleCodes(securityService.listCurrentRoleCodes());
         securityUser.setClientType(request.getHeader(HttpHeader.CLIENT_TYPE));
+        // securityUser.setTenantId(securityService.getTenantId(request.getServerName()));
         SecurityUtil.setCurrentUser(securityUser);
         return true;
     }
@@ -30,6 +31,6 @@ public class SecurityContextInitInterceptor extends AbstractHandlerInterceptor {
     @Override
     public void afterCompletion(@Nonnull HttpServletRequest request, @Nonnull HttpServletResponse response, @Nonnull Object handler, Exception ex) throws Exception {
         // 清除缓存
-        SecurityUtil.clearCurrentUser();
+        SecurityUtil.clearUser();
     }
 }

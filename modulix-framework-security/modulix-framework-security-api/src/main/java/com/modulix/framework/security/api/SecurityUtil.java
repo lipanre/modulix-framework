@@ -1,5 +1,6 @@
 package com.modulix.framework.security.api;
 
+import com.alibaba.ttl.TransmittableThreadLocal;
 import com.modulix.framework.security.api.common.RoleCode;
 import com.modulix.framework.security.api.info.SecurityUser;
 
@@ -15,7 +16,8 @@ import java.util.function.Function;
 public class SecurityUtil {
 
     private static final ThreadLocal<SecurityUser> currentUser = new ThreadLocal<>();
-
+    private static final TransmittableThreadLocal<String> serverNameThreadLocal = new TransmittableThreadLocal<>();
+    private static final ThreadLocal<Long> tenantIdThreadLocal = new ThreadLocal<>();
 
     /**
      * 设置当前线程的用户信息
@@ -49,7 +51,7 @@ public class SecurityUtil {
     /**
      * 清除当前线程的用户信息
      */
-    public static void clearCurrentUser() {
+    public static void clearUser() {
         currentUser.remove();
     }
 
@@ -103,5 +105,44 @@ public class SecurityUtil {
     public static String getClientType() {
         SecurityUser user = getCurrentUser();
         return user.getClientType();
+    }
+
+    // /**
+    //  * 获取当前登录用户租户id
+    //  *
+    //  * @return 租户id
+    //  */
+    // public static Long getTenantId() {
+    //     SecurityUser currentUser = getCurrentUser();
+    //     return currentUser.getTenantId();
+    // }
+
+    /**
+     * 获取请求域名
+     *
+     * @return 请求域名
+     */
+    public static String getServerName() {
+        return serverNameThreadLocal.get();
+    }
+
+    public static void setServerName(String serverName) {
+        serverNameThreadLocal.set(serverName);
+    }
+
+    public static void clearServerName() {
+        serverNameThreadLocal.remove();
+    }
+
+    public static void setTenantId(Long tenantId) {
+        tenantIdThreadLocal.set(tenantId);
+    }
+
+    public static Long getTenantId() {
+        return  tenantIdThreadLocal.get();
+    }
+
+    public static void clearTenantId() {
+        tenantIdThreadLocal.remove();
     }
 }

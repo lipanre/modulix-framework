@@ -33,4 +33,9 @@ public class SecurityUser {
      * 客户端类型
      */
     private String clientType;
+
+    /**
+     * 租户id
+     */
+    // private Long tenantId;
 }
